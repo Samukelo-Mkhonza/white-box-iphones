@@ -1,0 +1,287 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum Condition {
+  EXCELLENT
+  VERY_GOOD
+  GOOD
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+// Kept separate from Category so "Samsung phones" / "Accessories" (see
+// requirements doc future-features list) can be added without touching
+// existing product rows.
+model Brand {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  slug     String    @unique
+  products Product[]
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  slug     String    @unique
+  products Product[]
+}
+
+model Product {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  name           String
+  series         String
+  brandId        String
+  categoryId     String
+  description    String
+  specifications String // JSON string: { "screen": "...", "chip": "...", "camera": "..." }
+  isPublished    Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  brand      Brand           @relation(fields: [brandId], references: [id])
+  category   Category        @relation(fields: [categoryId], references: [id])
+  colourways Colourway[]
+  variants   ProductVariant[]
+  reviews    Review[]
+  wishedBy   WishlistItem[]
+
+  @@index([brandId])
+  @@index([categoryId])
+  @@index([series])
+}
+
+model Colourway {
+  id        String  @id @default(cuid())
+  productId String
+  name      String // e.g. "Midnight"
+  hexCode   String // e.g. "#1d1d1f"
+
+  product  Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  images   ProductImage[]
+  variants ProductVariant[]
+
+  @@unique([productId, name])
+}
+
+model ProductImage {
+  id          String @id @default(cuid())
+  colourwayId String
+  url         String
+  altText     String
+  position    Int    @default(0)
+
+  colourway Colourway @relation(fields: [colourwayId], references: [id], onDelete: Cascade)
+
+  @@index([colourwayId])
+}
+
+// A specific buyable SKU: one product x colour x storage x condition tier.
+// Modelled as distinct variants (rather than one row with a condition dropdown)
+// because price, stock and battery health all vary independently per tier.
+model ProductVariant {
+  id               String    @id @default(cuid())
+  productId        String
+  colourwayId      String
+  storageGb        Int
+  batteryHealthPct Int
+  condition        Condition
+  priceCents       Int
+  stockQty         Int       @default(0)
+  sku              String    @unique
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  product     Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  colourway   Colourway    @relation(fields: [colourwayId], references: [id], onDelete: Cascade)
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+
+  @@unique([productId, colourwayId, storageGb, condition])
+  @@index([productId])
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  phone        String?
+  role         Role     @default(CUSTOMER)
+  createdAt    DateTime @default(now())
+
+  addresses Address[]
+  orders    Order[]
+  wishlist  WishlistItem[]
+  reviews   Review[]
+  carts     Cart[]
+}
+
+model Address {
+  id         String  @id @default(cuid())
+  userId     String
+  label      String  @default("Home")
+  line1      String
+  line2      String?
+  city       String
+  province   String
+  postalCode String
+  country    String  @default("South Africa")
+  isDefault  Boolean @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// Cart is DB-backed and works for both signed-in users (userId set) and
+// guests (sessionToken set via a cookie), so items survive a login mid-shop.
+model Cart {
+  id           String   @id @default(cuid())
+  userId       String?
+  sessionToken String?  @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user  User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
+
+  @@index([userId])
+}
+
+model CartItem {
+  id        String @id @default(cuid())
+  cartId    String
+  variantId String
+  quantity  Int    @default(1)
+
+  cart    Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  variant ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, variantId])
+}
+
+model Order {
+  id               String      @id @default(cuid())
+  orderNumber      String      @unique
+  userId           String?
+  guestEmail       String?
+  status           OrderStatus @default(PENDING)
+  subtotalCents    Int
+  shippingFeeCents Int
+  discountCents    Int         @default(0)
+  totalCents       Int
+  currency         String      @default("ZAR")
+  shippingAddress  String // JSON snapshot, so later address edits don't rewrite history
+  trackingNumber   String?
+  discountCodeId   String?
+  payfastPaymentId String?
+  paidAt           DateTime?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  user         User?         @relation(fields: [userId], references: [id])
+  discountCode DiscountCode? @relation(fields: [discountCodeId], references: [id])
+  items        OrderItem[]
+
+  @@index([userId])
+}
+
+// Snapshots product details at time of purchase so historical orders remain
+// accurate even if the product is later repriced, restocked or removed.
+model OrderItem {
+  id                String @id @default(cuid())
+  orderId           String
+  variantId         String
+  productName        String
+  colourName        String
+  storageGb         Int
+  condition         Condition
+  priceCentsAtOrder Int
+  quantity          Int
+
+  order   Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variant ProductVariant @relation(fields: [variantId], references: [id])
+
+  @@index([orderId])
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}
+
+model Review {
+  id               String       @id @default(cuid())
+  productId        String
+  userId           String
+  rating           Int
+  title            String
+  body             String
+  verifiedPurchase Boolean      @default(false)
+  status           ReviewStatus @default(PENDING)
+  createdAt        DateTime     @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+model DiscountCode {
+  id         String       @id @default(cuid())
+  code       String       @unique
+  type       DiscountType
+  value      Int // percentage (0-100) or fixed cents, per `type`
+  active     Boolean      @default(true)
+  expiresAt  DateTime?
+  usageLimit Int?
+  usedCount  Int          @default(0)
+
+  orders Order[]
+}
+
+// Singleton row (id always "1") holding admin-editable store-wide settings.
+model StoreSetting {
+  id                  String @id @default("1")
+  flatShippingFeeCents Int   @default(15000)
+  minDeliveryDays      Int   @default(2)
+  maxDeliveryDays      Int   @default(5)
+}
