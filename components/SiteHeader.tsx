@@ -4,16 +4,27 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { logoutAction } from "@/app/account/actions";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
-const NAV_LINKS = [
+const PRIMARY_LINKS = [
   { href: "/shop", label: "Shop" },
   { href: "/catalogue", label: "Catalogue" },
-  { href: "/reviews", label: "Reviews" },
-  { href: "/faq", label: "FAQ" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
-  { href: "/track-order", label: "Track Order" },
 ];
+
+const COMPANY_LINKS = [
+  { href: "/about", label: "About", description: "Our story and mission" },
+  { href: "/reviews", label: "Reviews", description: "What our customers are saying" },
+];
+
+const SUPPORT_LINKS = [
+  { href: "/faq", label: "FAQ", description: "Answers to common questions" },
+  { href: "/contact", label: "Contact", description: "Get in touch with our team" },
+  { href: "/track-order", label: "Track Order", description: "Check the status of your order" },
+];
+
+const MORE_LINKS = [...COMPANY_LINKS, ...SUPPORT_LINKS];
+
+const NAV_LINKS = [...PRIMARY_LINKS, ...MORE_LINKS];
 
 export function SiteHeader({
   cartCount = 0,
@@ -29,19 +40,16 @@ export function SiteHeader({
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-200 bg-background/95 backdrop-blur dark:border-zinc-800">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
-        <Link href="/" className="flex shrink-0 items-center gap-2 text-lg font-semibold tracking-tight">
+        <Link href="/" className="flex shrink-0 items-center" aria-label="White Box iPhones home">
           <span className="flex h-9 w-9 items-center justify-center rounded-md bg-zinc-900 p-1.5 dark:bg-transparent dark:p-0">
             <Image
               src="/images/white-box-iphones-mark.png"
-              alt=""
+              alt="White Box iPhones"
               width={441}
               height={353}
               priority
               className="h-full w-auto object-contain"
             />
-          </span>
-          <span>
-            White Box <span className="text-zinc-400">iPhones</span>
           </span>
         </Link>
 
@@ -56,11 +64,56 @@ export function SiteHeader({
         </form>
 
         <nav className="hidden items-center gap-6 text-sm text-zinc-500 dark:text-zinc-400 lg:flex">
-          {NAV_LINKS.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-foreground">
+          {PRIMARY_LINKS.map((link) => (
+            <Link key={link.href} href={link.href} className="transition-colors hover:text-foreground">
               {link.label}
             </Link>
           ))}
+          <div className="group relative">
+            <button
+              type="button"
+              className="flex items-center gap-1 transition-colors hover:text-foreground"
+            >
+              More
+              <svg viewBox="0 0 20 20" fill="none" className="h-3.5 w-3.5" aria-hidden="true">
+                <path d="M5 7.5l5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <div className="invisible absolute right-0 top-full z-20 w-[420px] max-w-[90vw] translate-y-1 rounded-xl border border-zinc-200 bg-background p-6 opacity-0 shadow-xl transition-all duration-150 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 dark:border-zinc-800">
+              <div className="grid grid-cols-2 gap-8">
+                <div>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                    Company
+                  </p>
+                  <div className="flex flex-col gap-4">
+                    {COMPANY_LINKS.map((link) => (
+                      <Link key={link.href} href={link.href} className="group/item block">
+                        <span className="block text-sm font-semibold text-foreground">{link.label}</span>
+                        <span className="mt-0.5 block text-xs text-zinc-500 transition-colors group-hover/item:text-foreground dark:text-zinc-400">
+                          {link.description}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                    Support
+                  </p>
+                  <div className="flex flex-col gap-4">
+                    {SUPPORT_LINKS.map((link) => (
+                      <Link key={link.href} href={link.href} className="group/item block">
+                        <span className="block text-sm font-semibold text-foreground">{link.label}</span>
+                        <span className="mt-0.5 block text-xs text-zinc-500 transition-colors group-hover/item:text-foreground dark:text-zinc-400">
+                          {link.description}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           {userName ? (
             <>
               {isAdmin && (
@@ -100,6 +153,8 @@ export function SiteHeader({
             </span>
           )}
         </Link>
+
+        <ThemeToggle />
 
         <button
           type="button"
