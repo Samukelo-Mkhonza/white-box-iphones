@@ -145,6 +145,7 @@ model User {
   wishlist  WishlistItem[]
   reviews   Review[]
   carts     Cart[]
+  sessions  Session[]
 }
 
 model Address {
@@ -158,6 +159,18 @@ model Address {
   postalCode String
   country    String  @default("South Africa")
   isDefault  Boolean @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

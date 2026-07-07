@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { formatZAR } from "@/lib/format";
 import { conditionLabel, formatStorage } from "@/lib/products";
 import { addToCartAction, buyNowAction } from "@/app/cart/actions";
+import { WishlistButton } from "@/components/WishlistButton";
 import type { Condition } from "@prisma/client";
 
 type Variant = {
@@ -29,15 +30,19 @@ type ColourwayInput = {
 const CONDITION_ORDER: Condition[] = ["EXCELLENT", "VERY_GOOD", "GOOD"];
 
 export function ProductVariantPicker({
+  productId,
   productName,
   colourways,
   minDeliveryDays,
   maxDeliveryDays,
+  initialWishlisted,
 }: {
+  productId: string;
   productName: string;
   colourways: ColourwayInput[];
   minDeliveryDays: number;
   maxDeliveryDays: number;
+  initialWishlisted: boolean;
 }) {
   const [colourwayId, setColourwayId] = useState(colourways[0]?.id);
   const colourway = colourways.find((c) => c.id === colourwayId) ?? colourways[0];
@@ -248,6 +253,10 @@ export function ProductVariantPicker({
           </button>
         </div>
         {feedback && <p className="mt-2 text-sm text-emerald-600 dark:text-emerald-400">{feedback}</p>}
+
+        <div className="mt-4">
+          <WishlistButton productId={productId} initialSaved={initialWishlisted} />
+        </div>
 
         <p className="mt-6 text-sm text-zinc-500 dark:text-zinc-400">
           Estimated delivery: {minDeliveryDays}&ndash;{maxDeliveryDays} business days across South Africa.

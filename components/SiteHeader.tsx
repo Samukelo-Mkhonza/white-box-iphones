@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { logoutAction } from "@/app/account/actions";
 
 const NAV_LINKS = [
   { href: "/shop", label: "Shop" },
@@ -10,9 +11,16 @@ const NAV_LINKS = [
   { href: "/faq", label: "FAQ" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
+  { href: "/track-order", label: "Track Order" },
 ];
 
-export function SiteHeader({ cartCount = 0 }: { cartCount?: number }) {
+export function SiteHeader({
+  cartCount = 0,
+  userName = null,
+}: {
+  cartCount?: number;
+  userName?: string | null;
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -38,6 +46,22 @@ export function SiteHeader({ cartCount = 0 }: { cartCount?: number }) {
               {link.label}
             </Link>
           ))}
+          {userName ? (
+            <>
+              <Link href="/account" className="hover:text-foreground">
+                {userName.split(" ")[0]}
+              </Link>
+              <form action={logoutAction}>
+                <button type="submit" className="hover:text-foreground">
+                  Log out
+                </button>
+              </form>
+            </>
+          ) : (
+            <Link href="/login" className="hover:text-foreground">
+              Sign In
+            </Link>
+          )}
         </nav>
 
         <Link href="/cart" className="relative hidden shrink-0 lg:block" aria-label="Cart">
@@ -95,6 +119,22 @@ export function SiteHeader({ cartCount = 0 }: { cartCount?: number }) {
                 {link.label}
               </Link>
             ))}
+            {userName ? (
+              <>
+                <Link href="/account" onClick={() => setMenuOpen(false)} className="hover:text-foreground">
+                  My Account
+                </Link>
+                <form action={logoutAction}>
+                  <button type="submit" className="hover:text-foreground">
+                    Log out
+                  </button>
+                </form>
+              </>
+            ) : (
+              <Link href="/login" onClick={() => setMenuOpen(false)} className="hover:text-foreground">
+                Sign In
+              </Link>
+            )}
           </nav>
         </div>
       )}

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCart, cartSubtotalCents, clearCart } from "@/lib/cart";
 import { getStoreSettings } from "@/lib/settings";
+import { getCurrentUser } from "@/lib/auth";
 
 function generateOrderNumber(): string {
   const stamp = Date.now().toString(36).toUpperCase();
@@ -55,10 +56,12 @@ export async function createOrderAction(
   const subtotalCents = cartSubtotalCents(cart);
   const totalCents = subtotalCents + settings.flatShippingFeeCents;
   const orderNumber = generateOrderNumber();
+  const user = await getCurrentUser();
 
   const order = await prisma.order.create({
     data: {
       orderNumber,
+      userId: user?.id,
       guestEmail: email,
       status: "PENDING",
       subtotalCents,
