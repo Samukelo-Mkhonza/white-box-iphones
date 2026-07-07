@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { formatZAR } from "@/lib/format";
 import { conditionLabel, formatStorage } from "@/lib/products";
+import { addToCartAction, buyNowAction } from "@/app/cart/actions";
 import type { Condition } from "@prisma/client";
 
 type Variant = {
@@ -65,6 +67,28 @@ export function ProductVariantPicker({
   const activeImage = images[Math.min(imageIndex, images.length - 1)];
 
   const [quantity, setQuantity] = useState(1);
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
+  const maxQuantity = Math.min(variant.stockQty, 5) || 1;
+  const safeQuantity = Math.min(quantity, maxQuantity);
+
+  function handleAddToCart() {
+    setFeedback(null);
+    startTransition(async () => {
+      await addToCartAction(variant.id, safeQuantity);
+      setFeedback("Added to cart.");
+      router.refresh();
+    });
+  }
+
+  function handleBuyNow() {
+    setFeedback(null);
+    startTransition(async () => {
+      await buyNowAction(variant.id, safeQuantity);
+    });
+  }
 
   function selectColourway(id: string) {
     setColourwayId(id);
@@ -192,11 +216,12 @@ export function ProductVariantPicker({
           </label>
           <select
             id="quantity"
-            value={quantity}
+            value={safeQuantity}
             onChange={(e) => setQuantity(Number(e.target.value))}
+            disabled={variant.stockQty === 0}
             className="rounded-md border border-zinc-200 bg-transparent px-3 py-2 text-sm dark:border-zinc-700"
           >
-            {Array.from({ length: Math.min(variant.stockQty, 5) || 1 }, (_, i) => i + 1).map((n) => (
+            {Array.from({ length: maxQuantity }, (_, i) => i + 1).map((n) => (
               <option key={n} value={n}>
                 {n}
               </option>
@@ -207,22 +232,22 @@ export function ProductVariantPicker({
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <button
             type="button"
-            disabled
-            className="flex-1 cursor-not-allowed rounded-full border border-zinc-300 py-3 text-sm font-medium text-zinc-400 dark:border-zinc-700 dark:text-zinc-600"
+            onClick={handleAddToCart}
+            disabled={isPending || variant.stockQty === 0}
+            className="flex-1 rounded-full border border-foreground py-3 text-sm font-medium hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:border-zinc-300 disabled:text-zinc-400 dark:disabled:border-zinc-700 dark:disabled:text-zinc-600"
           >
-            Add to Cart
+            {isPending ? "Adding..." : "Add to Cart"}
           </button>
           <button
             type="button"
-            disabled
-            className="flex-1 cursor-not-allowed rounded-full bg-zinc-300 py-3 text-sm font-medium text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500"
+            onClick={handleBuyNow}
+            disabled={isPending || variant.stockQty === 0}
+            className="flex-1 rounded-full bg-foreground py-3 text-sm font-medium text-background hover:opacity-80 disabled:cursor-not-allowed disabled:bg-zinc-300 disabled:text-zinc-500 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-500"
           >
             Buy Now
           </button>
         </div>
-        <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-          Checkout is launching in the next update. You can browse and pick your exact configuration today.
-        </p>
+        {feedback && <p className="mt-2 text-sm text-emerald-600 dark:text-emerald-400">{feedback}</p>}
 
         <p className="mt-6 text-sm text-zinc-500 dark:text-zinc-400">
           Estimated delivery: {minDeliveryDays}&ndash;{maxDeliveryDays} business days across South Africa.

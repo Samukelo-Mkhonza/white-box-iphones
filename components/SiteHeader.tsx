@@ -12,7 +12,7 @@ const NAV_LINKS = [
   { href: "/contact", label: "Contact" },
 ];
 
-export function SiteHeader() {
+export function SiteHeader({ cartCount = 0 }: { cartCount?: number }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -40,6 +40,23 @@ export function SiteHeader() {
           ))}
         </nav>
 
+        <Link href="/cart" className="relative hidden shrink-0 lg:block" aria-label="Cart">
+          <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true">
+            <path
+              d="M3 3h2l.4 2M7 13h10l3-8H5.4M7 13L5.4 5M7 13l-1.5 6h11.5M9 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          {cartCount > 0 && (
+            <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-[10px] font-medium text-background">
+              {cartCount}
+            </span>
+          )}
+        </Link>
+
         <button
           type="button"
           onClick={() => setMenuOpen((open) => !open)}
@@ -65,6 +82,9 @@ export function SiteHeader() {
             />
           </form>
           <nav className="flex flex-col gap-3 text-sm text-zinc-500 dark:text-zinc-400">
+            <Link href="/cart" onClick={() => setMenuOpen(false)} className="hover:text-foreground">
+              Cart{cartCount > 0 ? ` (${cartCount})` : ""}
+            </Link>
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
