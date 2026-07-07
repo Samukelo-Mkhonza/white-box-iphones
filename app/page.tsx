@@ -1,65 +1,160 @@
-import Image from "next/image";
+const products = [
+  {
+    name: "iPhone 13",
+    storage: "128 GB",
+    price: "R8,999",
+    tag: "Best value",
+  },
+  {
+    name: "iPhone 14",
+    storage: "128 GB",
+    price: "R10,999",
+    tag: null,
+  },
+  {
+    name: "iPhone 15",
+    storage: "128 GB",
+    price: "R13,499",
+    tag: "Popular",
+  },
+  {
+    name: "iPhone 15 Pro",
+    storage: "256 GB",
+    price: "R17,999",
+    tag: null,
+  },
+];
+
+const perks = [
+  {
+    title: "Fully certified",
+    body: "Every device is tested across 60+ checkpoints before it ships. Battery health 90% or better, guaranteed.",
+  },
+  {
+    title: "12-month warranty",
+    body: "Something goes wrong? We repair or replace it, no questions asked, for a full year.",
+  },
+  {
+    title: "Why white box?",
+    body: "Same iPhone, minus the retail packaging and markup. You save up to 40% off retail price.",
+  },
+];
+
+function PhoneIcon() {
+  return (
+    <svg
+      viewBox="0 0 48 48"
+      fill="none"
+      className="h-16 w-16 text-zinc-300 dark:text-zinc-600"
+      aria-hidden="true"
+    >
+      <rect
+        x="13"
+        y="4"
+        width="22"
+        height="40"
+        rx="4"
+        stroke="currentColor"
+        strokeWidth="2.5"
+      />
+      <rect x="20" y="7" width="8" height="2.5" rx="1.25" fill="currentColor" />
+    </svg>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
+        <span className="text-lg font-semibold tracking-tight">
+          White Box <span className="text-zinc-400">iPhones</span>
+        </span>
+        <nav className="flex gap-6 text-sm text-zinc-500 dark:text-zinc-400">
+          <a href="#shop" className="hover:text-foreground">
+            Shop
+          </a>
+          <a href="#why" className="hover:text-foreground">
+            Why us
+          </a>
+          <a href="#contact" className="hover:text-foreground">
+            Contact
+          </a>
+        </nav>
+      </header>
+
+      <main>
+        <section className="mx-auto max-w-5xl px-6 pb-16 pt-20 text-center">
+          <p className="mb-4 text-sm font-medium uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
+            Certified &middot; Warrantied &middot; Delivered
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
+          <h1 className="mx-auto max-w-2xl text-4xl font-bold tracking-tight sm:text-6xl">
+            The iPhone you want, without the price you dread.
+          </h1>
+          <p className="mx-auto mt-6 max-w-xl text-lg text-zinc-500 dark:text-zinc-400">
+            White-box iPhones are brand-quality devices sold without retail
+            packaging &mdash; fully tested, fully guaranteed, up to 40% less.
+          </p>
           <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#shop"
+            className="mt-8 inline-block rounded-full bg-foreground px-8 py-3 font-medium text-background transition-opacity hover:opacity-80"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
+            Browse phones
           </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+        </section>
+
+        <section id="shop" className="mx-auto max-w-5xl px-6 py-16">
+          <h2 className="mb-8 text-2xl font-semibold tracking-tight">
+            In stock now
+          </h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {products.map((p) => (
+              <div
+                key={p.name}
+                className="relative flex flex-col items-center rounded-2xl border border-zinc-200 p-6 text-center transition-shadow hover:shadow-lg dark:border-zinc-800"
+              >
+                {p.tag && (
+                  <span className="absolute right-3 top-3 rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
+                    {p.tag}
+                  </span>
+                )}
+                <PhoneIcon />
+                <h3 className="mt-4 font-semibold">{p.name}</h3>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                  {p.storage}
+                </p>
+                <p className="mt-3 text-xl font-bold">{p.price}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="why" className="mx-auto max-w-5xl px-6 py-16">
+          <h2 className="mb-8 text-2xl font-semibold tracking-tight">
+            Why buy from us
+          </h2>
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+            {perks.map((perk) => (
+              <div key={perk.title}>
+                <h3 className="mb-2 font-semibold">{perk.title}</h3>
+                <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+                  {perk.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
       </main>
+
+      <footer
+        id="contact"
+        className="border-t border-zinc-200 dark:border-zinc-800"
+      >
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-2 px-6 py-10 text-center text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="font-medium text-foreground">White Box iPhones</p>
+          <p>Questions? Reach us at hello@whiteboxiphones.example</p>
+          <p>&copy; {new Date().getFullYear()} White Box iPhones</p>
+        </div>
+      </footer>
     </div>
   );
 }
