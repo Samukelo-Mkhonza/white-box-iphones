@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { logoutAction } from "@/app/account/actions";
@@ -17,17 +18,31 @@ const NAV_LINKS = [
 export function SiteHeader({
   cartCount = 0,
   userName = null,
+  isAdmin = false,
 }: {
   cartCount?: number;
   userName?: string | null;
+  isAdmin?: boolean;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-200 bg-background/95 backdrop-blur dark:border-zinc-800">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
-        <Link href="/" className="text-lg font-semibold tracking-tight shrink-0">
-          White Box <span className="text-zinc-400">iPhones</span>
+        <Link href="/" className="flex shrink-0 items-center gap-2 text-lg font-semibold tracking-tight">
+          <span className="flex h-9 w-9 items-center justify-center rounded-md bg-zinc-900 p-1.5 dark:bg-transparent dark:p-0">
+            <Image
+              src="/images/white-box-iphones-mark.png"
+              alt=""
+              width={441}
+              height={353}
+              priority
+              className="h-full w-auto object-contain"
+            />
+          </span>
+          <span>
+            White Box <span className="text-zinc-400">iPhones</span>
+          </span>
         </Link>
 
         <form action="/shop" method="get" className="hidden max-w-sm flex-1 md:block">
@@ -48,6 +63,11 @@ export function SiteHeader({
           ))}
           {userName ? (
             <>
+              {isAdmin && (
+                <Link href="/admin" className="hover:text-foreground">
+                  Admin
+                </Link>
+              )}
               <Link href="/account" className="hover:text-foreground">
                 {userName.split(" ")[0]}
               </Link>
@@ -121,6 +141,11 @@ export function SiteHeader({
             ))}
             {userName ? (
               <>
+                {isAdmin && (
+                  <Link href="/admin" onClick={() => setMenuOpen(false)} className="hover:text-foreground">
+                    Admin
+                  </Link>
+                )}
                 <Link href="/account" onClick={() => setMenuOpen(false)} className="hover:text-foreground">
                   My Account
                 </Link>

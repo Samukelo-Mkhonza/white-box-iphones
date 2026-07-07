@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const POLICY_LINKS = [
@@ -20,8 +21,16 @@ export function SiteFooter() {
     <footer className="border-t border-zinc-200 dark:border-zinc-800">
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-6 py-12 text-sm sm:grid-cols-4">
         <div className="col-span-2 sm:col-span-1">
-          <p className="font-semibold text-foreground">White Box iPhones</p>
-          <p className="mt-2 text-zinc-500 dark:text-zinc-400">
+          <span className="inline-flex rounded-lg bg-zinc-900 p-3 dark:bg-transparent dark:p-0">
+            <Image
+              src="/images/white-box-iphones-logo-full.png"
+              alt="White Box iPhones"
+              width={936}
+              height={664}
+              className="h-16 w-auto object-contain"
+            />
+          </span>
+          <p className="mt-3 text-zinc-500 dark:text-zinc-400">
             Certified, warrantied white-box iPhones delivered across South Africa.
           </p>
         </div>

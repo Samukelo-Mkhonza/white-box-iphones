@@ -49,3 +49,8 @@ export async function getCurrentUser() {
 
   return session.user;
 }
+
+export async function getCurrentAdmin() {
+  const user = await getCurrentUser();
+  return user && user.role === "ADMIN" ? user : null;
+}

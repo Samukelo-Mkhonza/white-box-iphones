@@ -43,7 +43,7 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <SiteHeader cartCount={cartCount} userName={user?.name ?? null} />
+        <SiteHeader cartCount={cartCount} userName={user?.name ?? null} isAdmin={user?.role === "ADMIN"} />
         <main className="flex-1">{children}</main>
         <SiteFooter />
       </body>

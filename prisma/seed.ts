@@ -1,14 +1,8 @@
 import { PrismaClient, Condition } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { slugify } from "../lib/slug";
 
 const prisma = new PrismaClient();
-
-function slugify(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-}
 
 // Price delta applied on top of a model's base (smallest storage) price.
 const STORAGE_PRICE_DELTA_CENTS: Record<number, number> = {
