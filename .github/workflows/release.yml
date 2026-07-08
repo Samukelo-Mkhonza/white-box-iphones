@@ -1,0 +1,75 @@
+name: Release
+
+# Creates a version tag and GitHub Release after every successful production
+# deploy, so each release marks code that is actually live.
+# Chain: CI -> Deploy -> Release (workflow_run allows at most three levels).
+#
+# Versioning: patch bump from the latest v* tag (first release is v0.1.0,
+# matching package.json). For a minor/major bump, run this workflow manually
+# from the Actions tab and pick the bump level - later automatic releases
+# continue from whatever tag is highest.
+on:
+  workflow_run:
+    workflows: [Deploy]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version bump level
+        type: choice
+        default: patch
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # For workflow_run, release exactly the commit that was deployed;
+          # manual runs release the tip of the branch they were started from.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 0 # full history + tags, needed to find the latest version
+
+      - name: Compute next version
+        id: version
+        env:
+          BUMP: ${{ inputs.bump || 'patch' }}
+        run: |
+          if [ -n "$(git tag --points-at HEAD 'v*')" ]; then
+            echo "This commit is already released; skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          latest=$(git tag --list 'v*' --sort=-v:refname | head -n 1)
+          if [ -z "$latest" ]; then
+            next="v0.1.0"
+          else
+            IFS=. read -r major minor patch <<< "${latest#v}"
+            case "$BUMP" in
+              major) next="v$((major + 1)).0.0" ;;
+              minor) next="v${major}.$((minor + 1)).0" ;;
+              *)     next="v${major}.${minor}.$((patch + 1))" ;;
+            esac
+          fi
+          echo "Releasing $next (previous: ${latest:-none})"
+          echo "tag=$next" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        if: steps.version.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            --target "$(git rev-parse HEAD)" \
+            --title "${{ steps.version.outputs.tag }}" \
+            --generate-notes
