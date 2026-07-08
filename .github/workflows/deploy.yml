@@ -29,11 +29,11 @@ jobs:
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
-      # Env vars (DATABASE_URL, AUTH_SECRET, PAYFAST_*, etc.) come from the
-      # Vercel project's own settings, pulled in by this step - not from
-      # GitHub secrets. NOTE: the app's SQLite datasource needs to point at
-      # a hosted database (e.g. Turso) in that config - Vercel's filesystem
-      # is read-only/ephemeral, so a local SQLite file won't persist writes.
+      # App env vars (TURSO_DATABASE_URL, AUTH_SECRET, PAYFAST_*, etc.) come
+      # from the Vercel project's own settings, pulled in by this step - not
+      # from GitHub secrets. Production reads/writes go to Turso (see
+      # lib/prisma.ts) since Vercel's filesystem is read-only/ephemeral and
+      # can't hold a local SQLite file.
       - name: Pull Vercel environment
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
