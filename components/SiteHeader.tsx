@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { logoutAction } from "@/app/(site)/account/actions";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -24,6 +25,18 @@ const SUPPORT_LINKS = [
 ];
 
 const MORE_LINKS = [...COMPANY_LINKS, ...SUPPORT_LINKS];
+
+function subscribeNoop() {
+  return () => {};
+}
+
+function useIsClient() {
+  return useSyncExternalStore(
+    subscribeNoop,
+    () => true,
+    () => false
+  );
+}
 
 function isActivePath(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
@@ -50,6 +63,7 @@ export function SiteHeader({
   const [moreOpen, setMoreOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const mounted = useIsClient();
 
   const moreContainerRef = useRef<HTMLDivElement>(null);
   const moreButtonRef = useRef<HTMLButtonElement>(null);
@@ -333,139 +347,158 @@ export function SiteHeader({
         </form>
       )}
 
-      <div className={`fixed inset-0 z-50 lg:hidden ${menuOpen ? "" : "pointer-events-none"}`} aria-hidden={!menuOpen}>
-        <div
-          onClick={() => setMenuOpen(false)}
-          className={`absolute inset-0 bg-zinc-950/50 transition-opacity duration-300 ${
-            menuOpen ? "opacity-100" : "opacity-0"
-          }`}
-        />
-        <div
-          id="mobile-menu-drawer"
-          ref={drawerPanelRef}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Site menu"
-          className={`absolute right-0 top-0 flex h-full w-[85%] max-w-sm flex-col overflow-y-auto bg-background shadow-xl transition-transform duration-300 ease-out ${
-            menuOpen ? "translate-x-0" : "translate-x-full"
-          }`}
-        >
-          <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
-            <span className="text-sm font-semibold text-foreground">Menu</span>
-            <button
-              ref={closeButtonRef}
-              type="button"
+      {mounted &&
+        createPortal(
+          <div className={`fixed inset-0 z-50 lg:hidden ${menuOpen ? "" : "pointer-events-none"}`} aria-hidden={!menuOpen}>
+            <div
               onClick={() => setMenuOpen(false)}
-              aria-label="Close menu"
-              className="rounded-md p-1.5 text-zinc-500 transition-colors hover:text-foreground"
-            >
-              <svg viewBox="0 0 20 20" fill="none" className="h-5 w-5" aria-hidden="true">
-                <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            </button>
-          </div>
-
-          <form action="/shop" method="get" className="border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
-            <input
-              type="search"
-              name="q"
-              placeholder="Search iPhone models..."
-              aria-label="Search products"
-              className="w-full rounded-full border border-zinc-200 bg-transparent px-4 py-2 text-sm outline-none focus:border-zinc-400 dark:border-zinc-700"
+              className={`absolute inset-0 bg-zinc-950/50 transition-opacity duration-300 ${
+                menuOpen ? "opacity-100" : "opacity-0"
+              }`}
             />
-          </form>
-
-          <nav className="flex flex-1 flex-col gap-6 px-6 py-6 text-sm">
-            <div className="flex flex-col gap-4">
-              {PRIMARY_LINKS.map((link) => (
+            <div
+              id="mobile-menu-drawer"
+              ref={drawerPanelRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Site menu"
+              className={`absolute right-0 top-0 flex h-full w-[85%] max-w-sm flex-col overflow-y-auto bg-background shadow-xl transition-transform duration-300 ease-out ${
+                menuOpen ? "translate-x-0" : "translate-x-full"
+              }`}
+            >
+              <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
                 <Link
-                  key={link.href}
-                  href={link.href}
+                  href="/"
                   onClick={() => setMenuOpen(false)}
-                  className={navLinkClass(isActivePath(pathname, link.href))}
+                  className="flex shrink-0 items-center"
+                  aria-label="White Box iPhones home"
                 >
-                  {link.label}
+                  <span className="flex h-9 w-9 items-center justify-center">
+                    <Image
+                      src="/images/white-box-iphones-mark.png"
+                      alt="White Box iPhones"
+                      width={441}
+                      height={353}
+                      className="h-full w-auto object-contain invert dark:invert-0"
+                    />
+                  </span>
                 </Link>
-              ))}
-            </div>
-
-            <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-                Company
-              </p>
-              <div className="flex flex-col gap-4">
-                {COMPANY_LINKS.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMenuOpen(false)}
-                    className={navLinkClass(isActivePath(pathname, link.href))}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                <button
+                  ref={closeButtonRef}
+                  type="button"
+                  onClick={() => setMenuOpen(false)}
+                  aria-label="Close menu"
+                  className="rounded-md p-1.5 text-zinc-500 transition-colors hover:text-foreground"
+                >
+                  <svg viewBox="0 0 20 20" fill="none" className="h-5 w-5" aria-hidden="true">
+                    <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                </button>
               </div>
-            </div>
 
-            <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-                Support
-              </p>
-              <div className="flex flex-col gap-4">
-                {SUPPORT_LINKS.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMenuOpen(false)}
-                    className={navLinkClass(isActivePath(pathname, link.href))}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
+              <form action="/shop" method="get" className="border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+                <input
+                  type="search"
+                  name="q"
+                  placeholder="Search iPhone models..."
+                  aria-label="Search products"
+                  className="w-full rounded-full border border-zinc-200 bg-transparent px-4 py-2 text-sm outline-none focus:border-zinc-400 dark:border-zinc-700"
+                />
+              </form>
 
-            <div className="mt-auto flex flex-col gap-4 border-t border-zinc-200 pt-6 dark:border-zinc-800">
-              {userName ? (
-                <>
-                  {isAdmin && (
+              <nav className="flex flex-1 flex-col gap-6 px-6 py-6 text-sm">
+                <div className="flex flex-col gap-4">
+                  {PRIMARY_LINKS.map((link) => (
                     <Link
-                      href="/admin"
+                      key={link.href}
+                      href={link.href}
                       onClick={() => setMenuOpen(false)}
-                      className={navLinkClass(isActivePath(pathname, "/admin"))}
+                      className={navLinkClass(isActivePath(pathname, link.href))}
                     >
-                      Admin
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+
+                <div>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                    Company
+                  </p>
+                  <div className="flex flex-col gap-4">
+                    {COMPANY_LINKS.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setMenuOpen(false)}
+                        className={navLinkClass(isActivePath(pathname, link.href))}
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                    Support
+                  </p>
+                  <div className="flex flex-col gap-4">
+                    {SUPPORT_LINKS.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setMenuOpen(false)}
+                        className={navLinkClass(isActivePath(pathname, link.href))}
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-auto flex flex-col gap-4 border-t border-zinc-200 pt-6 dark:border-zinc-800">
+                  {userName ? (
+                    <>
+                      {isAdmin && (
+                        <Link
+                          href="/admin"
+                          onClick={() => setMenuOpen(false)}
+                          className={navLinkClass(isActivePath(pathname, "/admin"))}
+                        >
+                          Admin
+                        </Link>
+                      )}
+                      <Link
+                        href="/account"
+                        onClick={() => setMenuOpen(false)}
+                        className={navLinkClass(isActivePath(pathname, "/account"))}
+                      >
+                        My Account
+                      </Link>
+                      <form action={logoutAction}>
+                        <button
+                          type="submit"
+                          className="text-zinc-500 transition-colors hover:text-foreground dark:text-zinc-400"
+                        >
+                          Log out
+                        </button>
+                      </form>
+                    </>
+                  ) : (
+                    <Link
+                      href="/login"
+                      onClick={() => setMenuOpen(false)}
+                      className={navLinkClass(isActivePath(pathname, "/login"))}
+                    >
+                      Sign In
                     </Link>
                   )}
-                  <Link
-                    href="/account"
-                    onClick={() => setMenuOpen(false)}
-                    className={navLinkClass(isActivePath(pathname, "/account"))}
-                  >
-                    My Account
-                  </Link>
-                  <form action={logoutAction}>
-                    <button
-                      type="submit"
-                      className="text-zinc-500 transition-colors hover:text-foreground dark:text-zinc-400"
-                    >
-                      Log out
-                    </button>
-                  </form>
-                </>
-              ) : (
-                <Link
-                  href="/login"
-                  onClick={() => setMenuOpen(false)}
-                  className={navLinkClass(isActivePath(pathname, "/login"))}
-                >
-                  Sign In
-                </Link>
-              )}
+                </div>
+              </nav>
             </div>
-          </nav>
-        </div>
-      </div>
+          </div>,
+          document.body
+        )}
     </header>
   );
 }
