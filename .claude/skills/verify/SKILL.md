@@ -45,10 +45,29 @@ script re-applies it from localStorage on load, so in Playwright set
 `localStorage.setItem('theme', 'dark')` in `addInitScript` (adding the class
 alone gets reverted).
 
+## Cart-gated pages (/checkout)
+
+/checkout redirects to /cart when the cart is empty. Carts are keyed by a
+`cart_token` cookie mapped to `Cart.sessionToken`. Mint one directly:
+create `prisma.cart` with a `sessionToken`, add `cartItem` rows pointing at
+real `productVariant` ids, then send `Cookie: cart_token=<token>`. Clean up
+cart items before the cart (FK).
+
+## Verifying the catalogue PDF (/catalogue/download)
+
+`pdf-parse@1.1.1` (scratchpad install) extracts text + page count. For a
+visual check, render with `pdfjs-dist@3.11.174`: write an HTML file that
+loads `node_modules/pdfjs-dist/legacy/build/pdf.js`, draws pages to canvases,
+open it via `file://` in Chrome (`--allow-file-access-from-files`), and
+screenshot the canvas elements.
+
 ## Gotchas
 
 - SSR HTML splits JSX text with `<!-- -->`, so grep for fragments
   (`Hi, <!-- -->Thandiwe`), not the full rendered sentence.
-- The dev-tools indicator (bottom-left "N") may show a transient "1 Issue"
-  badge from compiles that happened while files were mid-edit; confirm with a
-  fresh context + console/pageerror listeners before treating it as real.
+- The dev-tools indicator (bottom-left "N") often shows a "1 Issue" badge
+  that is just Next's dev-only LCP warning (above-the-fold `next/image`
+  without `loading="eager"`), pre-existing site-wide. Confirm with a fresh
+  context + console/pageerror listeners before treating it as real.
+- Product `series` values include the word "Series" ("iPhone 14 Series");
+  a hand-built `/shop?series=iPhone+14` URL matches nothing.
