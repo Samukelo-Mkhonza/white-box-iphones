@@ -5,7 +5,7 @@ import { getCart, cartSubtotalCents } from "@/lib/cart";
 import { getStoreSettings } from "@/lib/settings";
 import { conditionLabel, formatStorage } from "@/lib/products";
 import { formatZAR } from "@/lib/format";
-import { updateQuantityAction, removeItemAction } from "@/app/cart/actions";
+import { updateQuantityAction, removeItemAction } from "@/app/(site)/cart/actions";
 
 export const metadata: Metadata = { title: "Your Cart" };
 

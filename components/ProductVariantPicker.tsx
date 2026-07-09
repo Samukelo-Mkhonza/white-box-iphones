@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { formatZAR } from "@/lib/format";
 import { conditionLabel, formatStorage } from "@/lib/products";
-import { addToCartAction, buyNowAction } from "@/app/cart/actions";
+import { addToCartAction, buyNowAction } from "@/app/(site)/cart/actions";
 import { WishlistButton } from "@/components/WishlistButton";
 import type { Condition } from "@prisma/client";
 

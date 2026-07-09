@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentAdmin } from "@/lib/auth";
-import { logoutAction } from "@/app/account/actions";
+import { logoutAction } from "@/app/(site)/account/actions";
 
 const ADMIN_NAV = [
   { href: "/admin", label: "Dashboard" },
@@ -23,13 +23,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[220px_1fr]">
         <nav className="space-y-1 text-sm">
           <Link href="/" className="mb-3 flex items-center gap-2 px-3">
-            <span className="flex h-8 w-8 items-center justify-center rounded-md bg-zinc-900 p-1.5 dark:bg-transparent dark:p-0">
+            <span className="flex h-8 w-8 items-center justify-center">
               <Image
                 src="/images/white-box-iphones-mark.png"
                 alt="White Box iPhones"
                 width={441}
                 height={353}
-                className="h-full w-auto object-contain"
+                className="h-full w-auto object-contain invert dark:invert-0"
               />
             </span>
           </Link>

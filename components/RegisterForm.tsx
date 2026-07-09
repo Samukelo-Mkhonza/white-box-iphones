@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { registerAction, type AuthFormState } from "@/app/register/actions";
+import { registerAction, type AuthFormState } from "@/app/(site)/register/actions";
 
 const initialState: AuthFormState = { status: "idle" };
 

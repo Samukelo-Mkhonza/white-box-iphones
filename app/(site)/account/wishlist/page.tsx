@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getCurrentUser } from "@/lib/auth";
 import { getWishlist } from "@/lib/wishlist";
-import { removeWishlistItemAction } from "@/app/wishlist/actions";
+import { removeWishlistItemAction } from "@/app/(site)/wishlist/actions";
 
 export const metadata: Metadata = { title: "Wishlist" };
 

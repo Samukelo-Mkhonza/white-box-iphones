@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { createOrderAction, type CheckoutFormState } from "@/app/checkout/actions";
+import { createOrderAction, type CheckoutFormState } from "@/app/(site)/checkout/actions";
 
 const PROVINCES = [
   "Eastern Cape",
