@@ -7,6 +7,7 @@ export async function getWishlist(userId: string) {
       product: {
         include: {
           colourways: { include: { images: { orderBy: { position: "asc" as const } } }, take: 1 },
+          variants: { select: { priceCents: true, stockQty: true } },
         },
       },
     },

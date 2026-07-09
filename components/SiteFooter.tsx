@@ -21,13 +21,13 @@ export function SiteFooter() {
     <footer className="border-t border-zinc-200 dark:border-zinc-800">
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-6 py-12 text-sm sm:grid-cols-4">
         <div className="col-span-2 sm:col-span-1">
-          <span className="inline-flex rounded-lg bg-zinc-900 p-3 dark:bg-transparent dark:p-0">
+          <span className="inline-flex">
             <Image
               src="/images/white-box-iphones-logo-full.png"
               alt="White Box iPhones"
               width={936}
               height={664}
-              className="h-16 w-auto object-contain"
+              className="h-16 w-auto object-contain invert dark:invert-0"
             />
           </span>
           <p className="mt-3 text-zinc-500 dark:text-zinc-400">

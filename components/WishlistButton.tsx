@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { toggleWishlistAction } from "@/app/wishlist/actions";
+import { toggleWishlistAction } from "@/app/(site)/wishlist/actions";
 
 export function WishlistButton({
   productId,
