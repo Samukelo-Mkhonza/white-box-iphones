@@ -29,16 +29,15 @@ jobs:
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
-      # App env vars (TURSO_DATABASE_URL, AUTH_SECRET, PAYFAST_*, etc.) come
-      # from the Vercel project's own settings, pulled in by this step - not
-      # from GitHub secrets. Production reads/writes go to Turso (see
-      # lib/prisma.ts) since Vercel's filesystem is read-only/ephemeral and
-      # can't hold a local SQLite file.
-      - name: Pull Vercel environment
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Build
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-
+      # The build runs remotely on Vercel, not on this runner. App env vars
+      # (TURSO_DATABASE_URL, AUTH_SECRET, PAYFAST_*, etc.) live in the Vercel
+      # project's settings and are only readable inside Vercel's build
+      # infrastructure - pulling them onto a GitHub runner yields empty
+      # values, which is why a runner-side `vercel build` cannot work here.
+      # Production reads/writes go to Turso (see lib/prisma.ts) since
+      # Vercel's filesystem is read-only/ephemeral and can't hold a local
+      # SQLite file. Auto-deploys of main via the Vercel Git integration are
+      # disabled in vercel.json so this workflow is the only production
+      # deploy path.
       - name: Deploy
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
