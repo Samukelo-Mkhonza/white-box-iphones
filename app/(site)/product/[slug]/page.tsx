@@ -15,6 +15,7 @@ import { ProductVariantPicker } from "@/components/ProductVariantPicker";
 import { ProductCard } from "@/components/ProductCard";
 import { ReviewForm } from "@/components/ReviewForm";
 import { StarRating } from "@/components/StarRating";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export async function generateStaticParams() {
   const products = await getAllProductsWithRelations();
@@ -59,14 +60,20 @@ export default async function ProductPage({
       ])
     : [false, null];
 
+  const averageRating = reviews.length
+    ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
+    : null;
+
   return (
     <div className="mx-auto max-w-6xl px-6 py-12">
-      <nav className="mb-8 text-sm text-zinc-500 dark:text-zinc-400">
-        <Link href="/shop" className="hover:text-foreground">
-          Shop
-        </Link>{" "}
-        / <span>{product.series}</span> / <span className="text-foreground">{product.name}</span>
-      </nav>
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Shop", href: "/shop" },
+          { label: product.series, href: `/shop?series=${encodeURIComponent(product.series)}` },
+          { label: product.name },
+        ]}
+      />
 
       <ProductVariantPicker
         productId={product.id}
@@ -75,14 +82,16 @@ export default async function ProductPage({
         minDeliveryDays={settings.minDeliveryDays}
         maxDeliveryDays={settings.maxDeliveryDays}
         initialWishlisted={wishlisted}
+        averageRating={averageRating}
+        reviewCount={reviews.length}
       />
 
-      <div className="mt-16 grid grid-cols-1 gap-10 lg:grid-cols-2">
-        <div>
+      <div className="mt-16 grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="rounded-2xl border border-zinc-200 p-6 dark:border-zinc-800">
           <h2 className="mb-3 text-lg font-semibold">Description</h2>
           <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{product.description}</p>
         </div>
-        <div>
+        <div className="rounded-2xl border border-zinc-200 p-6 dark:border-zinc-800">
           <h2 className="mb-3 text-lg font-semibold">Specifications</h2>
           <dl className="divide-y divide-zinc-200 text-sm dark:divide-zinc-800">
             {Object.entries(specs).map(([key, value]) => (
@@ -97,8 +106,17 @@ export default async function ProductPage({
         </div>
       </div>
 
-      <div className="mt-16">
-        <h2 className="mb-6 text-lg font-semibold">Customer Reviews</h2>
+      <div id="reviews" className="mt-16 scroll-mt-24">
+        <div className="mb-6 flex flex-wrap items-baseline gap-3">
+          <h2 className="text-lg font-semibold">Customer Reviews</h2>
+          {averageRating !== null && (
+            <span className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
+              <StarRating rating={Math.round(averageRating)} />
+              {averageRating.toFixed(1)} out of 5 &middot; {reviews.length} review
+              {reviews.length === 1 ? "" : "s"}
+            </span>
+          )}
+        </div>
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           <div className="space-y-4">
             {reviews.length === 0 ? (

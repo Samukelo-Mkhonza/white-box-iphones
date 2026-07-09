@@ -5,8 +5,15 @@ import { prisma } from "@/lib/prisma";
 import { formatZAR } from "@/lib/format";
 import { PageHeader } from "@/components/account/PageHeader";
 import { OrderStatusBadge } from "@/components/account/OrderStatusBadge";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = { title: "Order History" };
+
+const CRUMBS = [
+  { label: "Home", href: "/" },
+  { label: "Account", href: "/account" },
+  { label: "Order History" },
+];
 
 export default async function OrderHistoryPage() {
   const user = await getCurrentUser();
@@ -21,6 +28,7 @@ export default async function OrderHistoryPage() {
   if (orders.length === 0) {
     return (
       <div>
+        <Breadcrumbs items={CRUMBS} />
         <PageHeader title="Order History" description="Every order you place will show up here." />
         <div className="mt-6 flex flex-col items-center rounded-2xl border border-dashed border-zinc-300 px-6 py-16 text-center dark:border-zinc-700">
           <svg
@@ -54,6 +62,7 @@ export default async function OrderHistoryPage() {
 
   return (
     <div>
+      <Breadcrumbs items={CRUMBS} />
       <PageHeader
         title="Order History"
         description={`${orders.length} order${orders.length === 1 ? "" : "s"} placed on your account.`}

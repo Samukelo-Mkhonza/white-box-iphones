@@ -2,11 +2,13 @@
 
 import { useMemo, useState, useTransition } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { formatZAR } from "@/lib/format";
 import { conditionLabel, formatStorage } from "@/lib/products";
 import { addToCartAction, buyNowAction } from "@/app/(site)/cart/actions";
 import { WishlistButton } from "@/components/WishlistButton";
+import { StarRating } from "@/components/StarRating";
 import type { Condition } from "@prisma/client";
 
 type Variant = {
@@ -36,6 +38,8 @@ export function ProductVariantPicker({
   minDeliveryDays,
   maxDeliveryDays,
   initialWishlisted,
+  averageRating,
+  reviewCount,
 }: {
   productId: string;
   productName: string;
@@ -43,6 +47,8 @@ export function ProductVariantPicker({
   minDeliveryDays: number;
   maxDeliveryDays: number;
   initialWishlisted: boolean;
+  averageRating: number | null;
+  reviewCount: number;
 }) {
   const [colourwayId, setColourwayId] = useState(colourways[0]?.id);
   const colourway = colourways.find((c) => c.id === colourwayId) ?? colourways[0];
@@ -111,11 +117,12 @@ export function ProductVariantPicker({
         <div className="relative aspect-square overflow-hidden rounded-2xl bg-zinc-50 dark:bg-zinc-900">
           {activeImage && (
             <Image
+              key={activeImage.url}
               src={activeImage.url}
               alt={activeImage.altText}
               fill
               unoptimized
-              className="object-contain p-10"
+              className="animate-image-fade object-contain p-10"
             />
           )}
         </div>
@@ -126,8 +133,8 @@ export function ProductVariantPicker({
                 key={image.url}
                 type="button"
                 onClick={() => setImageIndex(index)}
-                className={`h-16 w-16 overflow-hidden rounded-lg border bg-zinc-50 dark:bg-zinc-900 ${
-                  index === imageIndex ? "border-foreground" : "border-zinc-200 dark:border-zinc-800"
+                className={`h-16 w-16 overflow-hidden rounded-lg border bg-zinc-50 transition-colors dark:bg-zinc-900 ${
+                  index === imageIndex ? "border-foreground" : "border-zinc-200 hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600"
                 }`}
               >
                 <Image src={image.url} alt={image.altText} width={64} height={64} unoptimized className="object-contain p-2" />
@@ -139,6 +146,15 @@ export function ProductVariantPicker({
 
       <div>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{productName}</h1>
+        {reviewCount > 0 && averageRating !== null && (
+          <a
+            href="#reviews"
+            className="mt-1.5 flex w-fit items-center gap-2 text-sm text-zinc-500 transition-colors hover:text-foreground dark:text-zinc-400"
+          >
+            <StarRating rating={Math.round(averageRating)} />
+            {averageRating.toFixed(1)} &middot; {reviewCount} review{reviewCount === 1 ? "" : "s"}
+          </a>
+        )}
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
           SKU {variant.sku} &middot; {colourway.name}
         </p>
@@ -158,7 +174,7 @@ export function ProductVariantPicker({
                 onClick={() => selectColourway(c.id)}
                 title={c.name}
                 aria-pressed={c.id === colourway.id}
-                className={`h-9 w-9 rounded-full border-2 ${
+                className={`h-9 w-9 rounded-full border-2 transition-transform hover:scale-110 ${
                   c.id === colourway.id ? "border-foreground" : "border-transparent"
                 }`}
                 style={{ backgroundColor: c.hexCode }}
@@ -175,10 +191,10 @@ export function ProductVariantPicker({
                 key={gb}
                 type="button"
                 onClick={() => setStorageGb(gb)}
-                className={`rounded-full border px-4 py-1.5 text-sm ${
+                className={`rounded-full border px-4 py-1.5 text-sm transition-colors ${
                   gb === activeStorage
                     ? "border-foreground bg-foreground text-background"
-                    : "border-zinc-200 dark:border-zinc-700"
+                    : "border-zinc-200 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-500"
                 }`}
               >
                 {formatStorage(gb)}
@@ -199,10 +215,10 @@ export function ProductVariantPicker({
                   key={c}
                   type="button"
                   onClick={() => setCondition(c)}
-                  className={`rounded-lg border px-4 py-2 text-left text-sm ${
+                  className={`rounded-lg border px-4 py-2 text-left text-sm transition-colors ${
                     c === activeCondition
                       ? "border-foreground bg-foreground text-background"
-                      : "border-zinc-200 dark:border-zinc-700"
+                      : "border-zinc-200 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-500"
                   }`}
                 >
                   <span className="block font-medium">{conditionLabel(c)}</span>
@@ -252,7 +268,31 @@ export function ProductVariantPicker({
             Buy Now
           </button>
         </div>
-        {feedback && <p className="mt-2 text-sm text-emerald-600 dark:text-emerald-400">{feedback}</p>}
+        {feedback && (
+          <div
+            role="status"
+            className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400"
+          >
+            <span className="flex items-center gap-2">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-4 w-4 shrink-0"
+                aria-hidden="true"
+              >
+                <path d="M5 13l4 4L19 7" />
+              </svg>
+              {feedback}
+            </span>
+            <Link href="/cart" className="font-medium underline underline-offset-2 hover:opacity-80">
+              View cart &rarr;
+            </Link>
+          </div>
+        )}
 
         <div className="mt-4">
           <WishlistButton productId={productId} initialSaved={initialWishlisted} />

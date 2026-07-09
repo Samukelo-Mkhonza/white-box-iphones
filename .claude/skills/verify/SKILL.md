@@ -71,3 +71,6 @@ screenshot the canvas elements.
   context + console/pageerror listeners before treating it as real.
 - Product `series` values include the word "Series" ("iPhone 14 Series");
   a hand-built `/shop?series=iPhone+14` URL matches nothing.
+- Next injects an always-present empty `div[role="alert"]`
+  (`__next-route-announcer__`); scope alert locators (e.g.
+  `form div[role="alert"]`) or Playwright reads/strict-matches the wrong one.

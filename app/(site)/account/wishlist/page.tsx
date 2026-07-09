@@ -6,8 +6,15 @@ import { getWishlist } from "@/lib/wishlist";
 import { formatZAR } from "@/lib/format";
 import { removeWishlistItemAction } from "@/app/(site)/wishlist/actions";
 import { PageHeader } from "@/components/account/PageHeader";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = { title: "Wishlist" };
+
+const CRUMBS = [
+  { label: "Home", href: "/" },
+  { label: "Account", href: "/account" },
+  { label: "Wishlist" },
+];
 
 export default async function WishlistPage() {
   const user = await getCurrentUser();
@@ -18,6 +25,7 @@ export default async function WishlistPage() {
   if (items.length === 0) {
     return (
       <div>
+        <Breadcrumbs items={CRUMBS} />
         <PageHeader title="Wishlist" description="Phones you're keeping an eye on." />
         <div className="mt-6 flex flex-col items-center rounded-2xl border border-dashed border-zinc-300 px-6 py-16 text-center dark:border-zinc-700">
           <svg
@@ -49,6 +57,7 @@ export default async function WishlistPage() {
 
   return (
     <div>
+      <Breadcrumbs items={CRUMBS} />
       <PageHeader
         title="Wishlist"
         description={`${items.length} item${items.length === 1 ? "" : "s"} saved for later.`}

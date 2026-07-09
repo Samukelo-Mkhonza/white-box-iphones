@@ -4,6 +4,7 @@ import Image from "next/image";
 import { getAllProductsWithRelations, formatStorage, conditionLabel } from "@/lib/products";
 import { formatZAR } from "@/lib/format";
 import { slugify } from "@/lib/slug";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = {
   title: "Catalogue",
@@ -21,6 +22,7 @@ export default async function CataloguePage() {
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-12">
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Catalogue" }]} />
       <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Full Catalogue</h1>

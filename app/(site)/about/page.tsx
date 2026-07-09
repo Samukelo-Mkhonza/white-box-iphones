@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -27,6 +28,7 @@ const steps = [
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "About Us" }]} />
       <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">About White Box</h1>
       <p className="mt-6 text-lg leading-relaxed text-zinc-500 dark:text-zinc-400">
         White Box iPhones was started with one goal: make certified, high-quality iPhones

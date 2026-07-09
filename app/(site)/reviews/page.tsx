@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getApprovedReviews, getReviewStats } from "@/lib/reviews";
 import { StarRating } from "@/components/StarRating";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = {
   title: "Reviews",
@@ -13,6 +14,7 @@ export default async function ReviewsPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Reviews" }]} />
       <h1 className="text-3xl font-bold tracking-tight">Customer Reviews</h1>
       {stats.count > 0 ? (
         <p className="mt-3 flex items-center gap-2 text-zinc-500 dark:text-zinc-400">

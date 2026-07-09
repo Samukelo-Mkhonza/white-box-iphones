@@ -7,6 +7,7 @@ import { getStoreSettings } from "@/lib/settings";
 import { formatZAR } from "@/lib/format";
 import { conditionLabel, formatStorage } from "@/lib/products";
 import { CheckoutForm } from "@/components/CheckoutForm";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = { title: "Checkout" };
 
@@ -23,6 +24,9 @@ export default async function CheckoutPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-12">
+      <Breadcrumbs
+        items={[{ label: "Home", href: "/" }, { label: "Cart", href: "/cart" }, { label: "Checkout" }]}
+      />
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h1 className="text-3xl font-bold tracking-tight">Checkout</h1>
         <Link

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = { title: "Policies" };
 
@@ -14,6 +15,7 @@ const POLICIES = [
 export default function PoliciesIndexPage() {
   return (
     <>
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Policies" }]} />
       <h1 className="text-3xl font-bold tracking-tight">Policies</h1>
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {POLICIES.map((policy) => (

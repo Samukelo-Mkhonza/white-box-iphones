@@ -8,6 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { formatZAR } from "@/lib/format";
 import { conditionLabel, formatStorage } from "@/lib/products";
 import { OrderStatusBadge } from "@/components/account/OrderStatusBadge";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = { title: "Order Details" };
 
@@ -60,6 +61,14 @@ export default async function AccountOrderDetailPage({
 
   return (
     <div>
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Account", href: "/account" },
+          { label: "Order History", href: "/account/orders" },
+          { label: order.orderNumber },
+        ]}
+      />
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="text-2xl font-bold tracking-tight">Order {order.orderNumber}</h1>
         <OrderStatusBadge status={order.status} />

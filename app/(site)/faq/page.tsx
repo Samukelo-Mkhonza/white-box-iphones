@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { FaqAccordion } from "@/components/FaqAccordion";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = {
   title: "FAQ",
@@ -46,6 +47,7 @@ const FAQ_ITEMS = [
 export default function FaqPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "FAQ" }]} />
       <h1 className="text-3xl font-bold tracking-tight">Frequently Asked Questions</h1>
       <p className="mt-3 text-zinc-500 dark:text-zinc-400">
         Can&apos;t find your answer here? <a href="/contact" className="underline">Contact us</a> directly.

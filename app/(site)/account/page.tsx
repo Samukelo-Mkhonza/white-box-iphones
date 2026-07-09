@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { formatZAR } from "@/lib/format";
 import { PageHeader } from "@/components/account/PageHeader";
 import { OrderStatusBadge } from "@/components/account/OrderStatusBadge";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = { title: "Your Account" };
 
@@ -31,6 +32,7 @@ export default async function AccountOverviewPage() {
 
   return (
     <div>
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Account" }]} />
       <PageHeader
         title="Account Overview"
         description="Your profile, orders and saved items at a glance."

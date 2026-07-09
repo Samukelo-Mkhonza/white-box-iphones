@@ -1,3 +1,5 @@
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+
 export function PolicyContent({
   title,
   updated,
@@ -9,6 +11,9 @@ export function PolicyContent({
 }) {
   return (
     <>
+      <Breadcrumbs
+        items={[{ label: "Home", href: "/" }, { label: "Policies", href: "/policies" }, { label: title }]}
+      />
       <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
       <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">Last updated: {updated}</p>
       <div className="mt-8 space-y-8">

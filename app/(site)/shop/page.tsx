@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getFilterOptions, listProductSummaries, formatStorage } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = {
   title: "Shop",
@@ -183,13 +184,14 @@ export default async function ShopPage({
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-12">
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Shop" }]} />
       <h1 className="text-3xl font-bold tracking-tight">Shop iPhones</h1>
       <p className="mt-2 text-zinc-500 dark:text-zinc-400">
         Certified, warrantied white-box iPhones — every model we currently carry.
       </p>
 
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[240px_1fr]">
-        <div className="h-fit">
+        <div>
           <details className="group rounded-2xl border border-zinc-200 lg:hidden dark:border-zinc-800">
             <summary className="flex cursor-pointer list-none items-center justify-between p-4 text-sm font-medium [&::-webkit-details-marker]:hidden">
               Filters
@@ -219,7 +221,7 @@ export default async function ShopPage({
           <form
             action="/shop"
             method="get"
-            className="hidden rounded-2xl border border-zinc-200 p-5 lg:block dark:border-zinc-800"
+            className="hidden rounded-2xl border border-zinc-200 p-5 lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto dark:border-zinc-800"
           >
             <FilterFields params={params} filterOptions={filterOptions} idPrefix="d" />
           </form>

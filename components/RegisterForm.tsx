@@ -18,6 +18,7 @@ export function RegisterForm() {
           id="name"
           name="name"
           type="text"
+          autoComplete="name"
           required
           className="w-full rounded-md border border-zinc-200 bg-transparent px-3 py-2 text-sm dark:border-zinc-700"
         />
@@ -30,6 +31,7 @@ export function RegisterForm() {
           id="email"
           name="email"
           type="email"
+          autoComplete="email"
           required
           className="w-full rounded-md border border-zinc-200 bg-transparent px-3 py-2 text-sm dark:border-zinc-700"
         />
@@ -42,6 +44,7 @@ export function RegisterForm() {
           id="password"
           name="password"
           type="password"
+          autoComplete="new-password"
           required
           minLength={8}
           className="w-full rounded-md border border-zinc-200 bg-transparent px-3 py-2 text-sm dark:border-zinc-700"
@@ -50,7 +53,26 @@ export function RegisterForm() {
       </div>
 
       {state.status === "error" && (
-        <p className="text-sm text-red-600 dark:text-red-400">{state.message}</p>
+        <div
+          role="alert"
+          className="flex items-start gap-2.5 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-400"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="mt-0.5 h-4 w-4 shrink-0"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 8v4" />
+            <path d="M12 16h.01" />
+          </svg>
+          {state.message}
+        </div>
       )}
 
       <button

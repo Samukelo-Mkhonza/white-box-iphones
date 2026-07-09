@@ -6,6 +6,7 @@ import { getStoreSettings } from "@/lib/settings";
 import { conditionLabel, formatStorage } from "@/lib/products";
 import { formatZAR } from "@/lib/format";
 import { updateQuantityAction, removeItemAction } from "@/app/(site)/cart/actions";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = { title: "Your Cart" };
 
@@ -36,6 +37,7 @@ export default async function CartPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Cart" }]} />
       <h1 className="text-3xl font-bold tracking-tight">Your Cart</h1>
 
       <div className="mt-8 space-y-4">

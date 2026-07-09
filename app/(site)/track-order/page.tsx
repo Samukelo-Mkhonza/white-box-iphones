@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { formatZAR } from "@/lib/format";
 import { conditionLabel, formatStorage } from "@/lib/products";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = { title: "Track Order" };
 
@@ -25,6 +26,7 @@ export default async function TrackOrderPage({
 
   return (
     <div className="mx-auto max-w-lg px-6 py-16">
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Track Order" }]} />
       <h1 className="text-2xl font-bold tracking-tight">Track Your Order</h1>
       <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
         Enter your order number and the email address used at checkout.
