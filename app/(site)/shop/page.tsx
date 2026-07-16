@@ -185,8 +185,9 @@ export default async function ShopPage({
   return (
     <div className="mx-auto max-w-6xl px-6 py-12">
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Shop" }]} />
-      <h1 className="text-3xl font-bold tracking-tight">Shop iPhones</h1>
-      <p className="mt-2 text-zinc-500 dark:text-zinc-400">
+      <p className="eyebrow text-zinc-500 dark:text-zinc-400">Every model we carry</p>
+      <h1 className="mt-2 text-4xl font-extrabold tracking-tighter sm:text-5xl">Shop iPhones</h1>
+      <p className="mt-3 max-w-xl text-lg text-zinc-500 dark:text-zinc-400">
         Certified, warrantied white-box iPhones — every model we currently carry.
       </p>
 

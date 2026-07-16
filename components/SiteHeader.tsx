@@ -162,31 +162,24 @@ export function SiteHeader({
 
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-200 bg-background/95 backdrop-blur dark:border-zinc-800">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
-        <Link href="/" className="flex shrink-0 items-center" aria-label="White Box iPhones home">
-          <span className="flex h-9 w-9 items-center justify-center">
+      <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-3 px-6 py-4">
+        <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="White Box iPhones home">
+          <span className="flex h-8 w-8 items-center justify-center">
             <Image
               src="/images/white-box-iphones-mark.png"
-              alt="White Box iPhones"
+              alt=""
               width={441}
               height={353}
               priority
               className="h-full w-auto object-contain invert dark:invert-0"
             />
           </span>
+          <span className="hidden text-base font-extrabold uppercase tracking-tight sm:inline">
+            White Box<span aria-hidden="true">&#9642;</span>
+          </span>
         </Link>
 
-        <form action="/shop" method="get" className="hidden max-w-sm flex-1 md:block">
-          <input
-            type="search"
-            name="q"
-            placeholder="Search iPhone models..."
-            aria-label="Search products"
-            className="w-full rounded-full border border-zinc-200 bg-transparent px-4 py-2 text-sm outline-none focus:border-zinc-400 dark:border-zinc-700 dark:focus:border-zinc-500"
-          />
-        </form>
-
-        <nav className="hidden items-center gap-6 text-sm lg:flex">
+        <nav className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-7 text-sm lg:flex">
           {PRIMARY_LINKS.map((link) => (
             <Link key={link.href} href={link.href} className={navLinkClass(isActivePath(pathname, link.href))}>
               {link.label}
@@ -283,67 +276,78 @@ export function SiteHeader({
           )}
         </nav>
 
-        <button
-          type="button"
-          onClick={() => setMobileSearchOpen((open) => !open)}
-          aria-expanded={mobileSearchOpen}
-          aria-label="Toggle search"
-          className="shrink-0 rounded-full border border-zinc-200 p-2 text-zinc-500 transition-colors hover:text-foreground md:hidden dark:border-zinc-700"
-        >
-          <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5" aria-hidden="true">
-            <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.5" />
-            <path d="M21 21l-4.3-4.3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        </button>
+        <div className="flex shrink-0 items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setMobileSearchOpen((open) => !open)}
+            aria-expanded={mobileSearchOpen}
+            aria-label="Toggle search"
+            className="rounded-full p-2 text-zinc-500 transition-colors hover:text-foreground"
+          >
+            <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M21 21l-4.3-4.3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </button>
 
-        <Link href="/cart" className="relative shrink-0" aria-label="Cart">
-          <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true">
-            <path
-              d="M3 3h2l.4 2M7 13h10l3-8H5.4M7 13L5.4 5M7 13l-1.5 6h11.5M9 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          {cartCount > 0 && (
-            <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-[10px] font-medium text-background">
-              {cartCount}
-            </span>
-          )}
-        </Link>
+          <Link href="/cart" className="relative" aria-label="Cart">
+            <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true">
+              <path
+                d="M3 3h2l.4 2M7 13h10l3-8H5.4M7 13L5.4 5M7 13l-1.5 6h11.5M9 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            {cartCount > 0 && (
+              <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-[10px] font-medium text-background">
+                {cartCount}
+              </span>
+            )}
+          </Link>
 
-        <ThemeToggle />
+          <ThemeToggle />
 
-        <button
-          ref={hamburgerButtonRef}
-          type="button"
-          onClick={() => setMenuOpen((open) => !open)}
-          className="rounded-md border border-zinc-200 p-2 lg:hidden dark:border-zinc-700"
-          aria-expanded={menuOpen}
-          aria-controls="mobile-menu-drawer"
-          aria-label="Toggle menu"
-        >
-          <svg viewBox="0 0 20 20" fill="none" className="h-5 w-5" aria-hidden="true">
-            <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        </button>
+          <Link
+            href="/shop"
+            className="hidden rounded-full bg-foreground px-5 py-2 text-sm font-medium text-background transition-opacity hover:opacity-80 sm:inline-block"
+          >
+            Shop now
+          </Link>
+
+          <button
+            ref={hamburgerButtonRef}
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            className="rounded-md border border-zinc-200 p-2 lg:hidden dark:border-zinc-700"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu-drawer"
+            aria-label="Toggle menu"
+          >
+            <svg viewBox="0 0 20 20" fill="none" className="h-5 w-5" aria-hidden="true">
+              <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {mobileSearchOpen && (
         <form
           action="/shop"
           method="get"
-          className="border-t border-zinc-200 px-6 py-3 md:hidden dark:border-zinc-800"
+          className="border-t border-zinc-200 px-6 py-3 dark:border-zinc-800"
         >
-          <input
-            type="search"
-            name="q"
-            autoFocus
-            placeholder="Search iPhone models..."
-            aria-label="Search products"
-            className="w-full rounded-full border border-zinc-200 bg-transparent px-4 py-2 text-sm outline-none focus:border-zinc-400 dark:border-zinc-700 dark:focus:border-zinc-500"
-          />
+          <div className="mx-auto max-w-2xl">
+            <input
+              type="search"
+              name="q"
+              autoFocus
+              placeholder="Search iPhone models..."
+              aria-label="Search products"
+              className="w-full rounded-full border border-zinc-200 bg-transparent px-4 py-2 text-sm outline-none focus:border-zinc-400 dark:border-zinc-700 dark:focus:border-zinc-500"
+            />
+          </div>
         </form>
       )}
 

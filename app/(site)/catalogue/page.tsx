@@ -25,8 +25,9 @@ export default async function CataloguePage() {
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Catalogue" }]} />
       <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Full Catalogue</h1>
-          <p className="mt-2 text-zinc-500 dark:text-zinc-400">
+          <p className="eyebrow text-zinc-500 dark:text-zinc-400">The complete range</p>
+          <h1 className="mt-2 text-4xl font-extrabold tracking-tighter sm:text-5xl">Full Catalogue</h1>
+          <p className="mt-3 text-lg text-zinc-500 dark:text-zinc-400">
             Every model, colourway and storage size we carry, in one printable list.
           </p>
         </div>

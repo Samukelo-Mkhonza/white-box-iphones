@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { PT_Sans, Geist_Mono } from "next/font/google";
+import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 const THEME_INIT_SCRIPT = `(function(){try{var s=localStorage.getItem('theme');var d=s?s==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.classList.toggle('dark',d);}catch(e){}})();`;
 
-const ptSans = PT_Sans({
-  variable: "--font-pt-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["400", "700"],
 });
 
 const geistMono = Geist_Mono({
@@ -38,7 +37,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${ptSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col" suppressHydrationWarning>
         <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
