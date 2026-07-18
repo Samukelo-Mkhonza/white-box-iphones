@@ -4,7 +4,7 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0a0a0a;
 }
 
 .dark {
@@ -15,7 +15,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-pt-sans);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -35,6 +35,39 @@ textarea:focus-visible,
 summary:focus-visible {
   outline: 2px solid var(--foreground);
   outline-offset: 2px;
+}
+
+/* Inside always-dark sections the foreground token may be near-black in light
+   mode, so pin the focus ring to white for contrast. */
+.section-dark a:focus-visible,
+.section-dark button:focus-visible {
+  outline-color: #ffffff;
+}
+
+/* Monospace eyebrow label, e.g. "TRUSTED ACROSS SOUTH AFRICA". */
+.eyebrow {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: none;
+}
+
+/* Full-width near-black band used for alternating sections; stays dark in
+   both themes, like the reference design. */
+.section-dark {
+  background: #0a0a0a;
+  color: #fafafa;
+}
+
+/* Soft holographic/iridescent gradient for the hero, self-contained (no
+   external imagery). */
+.holo {
+  background:
+    radial-gradient(120% 90% at 85% 10%, rgba(255, 190, 140, 0.55) 0%, transparent 55%),
+    radial-gradient(100% 80% at 15% 90%, rgba(150, 190, 255, 0.5) 0%, transparent 60%),
+    radial-gradient(90% 100% at 70% 80%, rgba(255, 160, 200, 0.45) 0%, transparent 55%),
+    radial-gradient(140% 120% at 30% 20%, rgba(215, 195, 255, 0.9) 0%, transparent 70%),
+    linear-gradient(135deg, #e8dff5 0%, #d8c8ee 30%, #cdd5f2 55%, #f3d9e4 80%, #efe3f0 100%);
 }
 
 @keyframes image-fade {

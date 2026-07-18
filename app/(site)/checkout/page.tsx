@@ -28,7 +28,7 @@ export default async function CheckoutPage() {
         items={[{ label: "Home", href: "/" }, { label: "Cart", href: "/cart" }, { label: "Checkout" }]}
       />
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Checkout</h1>
+        <h1 className="text-4xl font-extrabold tracking-tighter sm:text-5xl">Checkout</h1>
         <Link
           href="/cart"
           className="text-sm text-zinc-500 hover:text-foreground dark:text-zinc-400"

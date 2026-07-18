@@ -17,7 +17,7 @@ export default async function CartPage() {
   if (items.length === 0) {
     return (
       <div className="mx-auto max-w-2xl px-6 py-20 text-center">
-        <h1 className="text-2xl font-bold tracking-tight">Your cart is empty</h1>
+        <h1 className="text-3xl font-extrabold tracking-tighter">Your cart is empty</h1>
         <p className="mt-3 text-zinc-500 dark:text-zinc-400">
           Browse our range of certified white-box iPhones to get started.
         </p>
@@ -38,7 +38,7 @@ export default async function CartPage() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Cart" }]} />
-      <h1 className="text-3xl font-bold tracking-tight">Your Cart</h1>
+      <h1 className="text-4xl font-extrabold tracking-tighter sm:text-5xl">Your Cart</h1>
 
       <div className="mt-8 space-y-4">
         {items.map((item) => {
