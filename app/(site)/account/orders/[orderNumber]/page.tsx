@@ -152,7 +152,7 @@ export default async function AccountOrderDetailPage({
             const image = item.variant.colourway.images[0];
             return (
               <div key={item.id} className="flex items-center gap-4 p-4">
-                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-zinc-50 dark:bg-zinc-900">
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg">
                   {image && (
                     <Image src={image.url} alt={image.altText} fill unoptimized className="object-contain p-2" />
                   )}

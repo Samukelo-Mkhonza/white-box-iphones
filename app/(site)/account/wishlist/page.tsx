@@ -76,7 +76,7 @@ export default async function WishlistPage() {
               <div className="flex items-start gap-4">
                 <Link
                   href={`/product/${item.product.slug}`}
-                  className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-zinc-50 dark:bg-zinc-900"
+                  className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg"
                 >
                   {image && (
                     <Image src={image.url} alt={image.altText} fill unoptimized className="object-contain p-2" />

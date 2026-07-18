@@ -87,7 +87,7 @@ export default async function CataloguePage() {
                   className="flex flex-col gap-4 p-4 transition-colors hover:bg-zinc-50 sm:flex-row sm:items-center dark:hover:bg-zinc-900"
                 >
                   {image && (
-                    <div className="relative h-20 w-20 shrink-0 rounded-lg bg-zinc-50 dark:bg-zinc-900">
+                    <div className="relative h-20 w-20 shrink-0 rounded-lg">
                       <Image src={image.url} alt={image.altText} fill unoptimized className="object-contain p-2" />
                     </div>
                   )}

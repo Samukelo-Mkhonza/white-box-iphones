@@ -52,7 +52,7 @@ export default async function CheckoutPage() {
               const image = item.variant.colourway.images[0];
               return (
                 <div key={item.id} className="flex items-center gap-3">
-                  <div className="relative h-14 w-14 shrink-0 rounded-lg bg-zinc-50 dark:bg-zinc-900">
+                  <div className="relative h-14 w-14 shrink-0 rounded-lg">
                     {image && (
                       <Image
                         src={image.url}
