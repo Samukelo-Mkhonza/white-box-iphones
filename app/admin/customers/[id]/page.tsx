@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCustomerForAdmin } from "@/lib/admin";
 import { formatZAR } from "@/lib/format";
+import { GenerateResetLinkForm } from "@/components/admin/GenerateResetLinkForm";
 
 export const metadata: Metadata = { title: "Admin · Customer Detail" };
 
@@ -22,6 +23,10 @@ export default async function AdminCustomerDetailPage({
         <p>{customer.email}</p>
         {customer.phone && <p>{customer.phone}</p>}
         <p>Joined {customer.createdAt.toLocaleDateString("en-ZA")}</p>
+      </div>
+
+      <div className="mt-6 max-w-xl">
+        <GenerateResetLinkForm customerId={customer.id} />
       </div>
 
       <h2 className="mb-3 mt-8 font-semibold">Orders</h2>
