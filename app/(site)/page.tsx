@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { getFeaturedProducts } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
@@ -25,6 +26,74 @@ const trustMarkers = [
   "7-Day Returns",
 ];
 
+function CertifiedBadge({ className }: { className?: string }) {
+  return (
+    <div
+      className={`flex items-center gap-2 rounded-full bg-zinc-950/85 px-4 py-2 shadow-xl backdrop-blur ${className ?? ""}`}
+    >
+      <svg
+        viewBox="0 0 16 16"
+        className="h-3.5 w-3.5 fill-none stroke-emerald-400 stroke-2"
+      >
+        <path
+          d="M2.5 8.5l3.5 3.5 7-8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      <span className="text-xs font-medium text-white">60-Point Certified</span>
+    </div>
+  );
+}
+
+function RatingBadge({ className }: { className?: string }) {
+  return (
+    <div
+      className={`rounded-2xl bg-white/80 px-4 py-3 shadow-xl backdrop-blur ${className ?? ""}`}
+    >
+      <p className="text-sm tracking-widest text-amber-500">★★★★★</p>
+      <p className="mt-1 text-xs font-semibold text-zinc-950">
+        Loved by verified buyers
+      </p>
+    </div>
+  );
+}
+
+function BatteryBadge({ className }: { className?: string }) {
+  return (
+    <div
+      className={`w-44 rounded-2xl bg-white/80 px-4 py-3 shadow-xl backdrop-blur ${className ?? ""}`}
+    >
+      <div className="flex items-baseline justify-between text-xs font-semibold text-zinc-950">
+        <span>Battery health</span>
+        <span>92%</span>
+      </div>
+      <div className="mt-2 h-1.5 rounded-full bg-zinc-200">
+        <div className="h-full w-[92%] rounded-full bg-emerald-500" />
+      </div>
+    </div>
+  );
+}
+
+function HeroCtas({ className }: { className?: string }) {
+  return (
+    <div className={className}>
+      <Link
+        href="/shop"
+        className="rounded-full bg-zinc-950 px-8 py-3.5 text-sm font-medium text-white transition-opacity hover:opacity-80"
+      >
+        Shop iPhones
+      </Link>
+      <Link
+        href="/about"
+        className="rounded-full bg-white/70 px-8 py-3.5 text-sm font-medium text-zinc-950 backdrop-blur transition-colors hover:bg-white"
+      >
+        How it works
+      </Link>
+    </div>
+  );
+}
+
 export default async function Home() {
   const featured = await getFeaturedProducts(4);
 
@@ -32,28 +101,58 @@ export default async function Home() {
     <div className="bg-background text-foreground">
       {/* Hero — inset holographic panel, large left-aligned headline */}
       <section className="mx-auto max-w-7xl px-4 pt-4 sm:px-6">
-        <div className="holo overflow-hidden rounded-3xl px-6 py-20 sm:px-12 sm:py-28 lg:px-16">
-          <h1 className="max-w-3xl text-4xl font-extrabold tracking-tighter text-zinc-950 sm:text-6xl lg:text-7xl">
-            The iPhone you love, without the retail markup.
-          </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-zinc-700">
-            Certified white-box iPhones, fully tested and fully guaranteed
-            &mdash; delivered across South Africa for up to 40% less.
-          </p>
-          <div className="mt-10 flex flex-wrap gap-3">
-            <Link
-              href="/shop"
-              className="rounded-full bg-zinc-950 px-8 py-3.5 text-sm font-medium text-white transition-opacity hover:opacity-80"
-            >
-              Shop iPhones
-            </Link>
-            <Link
-              href="/about"
-              className="rounded-full bg-white/70 px-8 py-3.5 text-sm font-medium text-zinc-950 backdrop-blur transition-colors hover:bg-white"
-            >
-              How it works
-            </Link>
+        <div className="holo relative overflow-hidden rounded-3xl px-6 pb-16 pt-20 sm:px-12 sm:pt-28 lg:px-16 lg:pb-28">
+          {/* Flagship device showcase — decorative, desktop only */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 right-0 hidden w-[46%] select-none lg:block"
+          >
+            {/* Soft glow grounding the device against the gradient */}
+            <div className="absolute right-[8%] top-1/2 h-[64%] w-[68%] -translate-y-1/2 rounded-full bg-white/50 blur-3xl" />
+            <div className="absolute right-[12%] top-1/2 aspect-[734/909] h-[78%] -translate-y-1/2">
+              <Image
+                src="/images/hero-iphone-16-pro.png"
+                alt=""
+                fill
+                unoptimized
+                preload
+                className="object-contain drop-shadow-2xl"
+              />
+            </div>
+            <CertifiedBadge className="hero-float absolute right-[7%] top-[9%]" />
+            <RatingBadge className="hero-float absolute left-[2%] top-[34%] [animation-delay:-2s]" />
+            <BatteryBadge className="hero-float absolute bottom-[12%] right-[4%] [animation-delay:-4s]" />
           </div>
+          <div className="relative text-center lg:text-left">
+            <h1 className="mx-auto max-w-3xl text-4xl font-extrabold tracking-tighter text-zinc-950 sm:text-6xl lg:mx-0 lg:max-w-[55%] lg:text-7xl">
+              The iPhone you love, without the retail markup.
+            </h1>
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-zinc-700 lg:mx-0">
+              Certified white-box iPhones, fully tested and fully guaranteed
+              &mdash; delivered across South Africa for up to 40% less.
+            </p>
+            <HeroCtas className="mt-10 hidden flex-wrap gap-3 lg:flex" />
+          </div>
+          {/* Mobile / tablet showcase — device between copy and CTAs */}
+          <div
+            aria-hidden
+            className="pointer-events-none mt-12 select-none lg:hidden"
+          >
+            <div className="flex justify-center">
+              <CertifiedBadge className="hero-float" />
+            </div>
+            <div className="relative mx-auto mt-6 aspect-[734/909] w-56 sm:w-64">
+              <Image
+                src="/images/hero-iphone-16-pro.png"
+                alt=""
+                fill
+                unoptimized
+                className="object-contain drop-shadow-2xl"
+              />
+              <BatteryBadge className="hero-float absolute bottom-16 left-0 -translate-x-1/3 [animation-delay:-3s]" />
+            </div>
+          </div>
+          <HeroCtas className="relative mt-10 flex flex-wrap justify-center gap-3 lg:hidden" />
         </div>
       </section>
 
@@ -89,7 +188,9 @@ export default async function Home() {
             {perks.map((perk) => (
               <div key={perk.title} className="border-t border-zinc-800 pt-6">
                 <h3 className="font-semibold">{perk.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-400">{perk.body}</p>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+                  {perk.body}
+                </p>
               </div>
             ))}
           </div>

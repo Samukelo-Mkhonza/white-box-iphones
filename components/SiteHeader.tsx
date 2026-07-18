@@ -26,6 +26,9 @@ const SUPPORT_LINKS = [
 
 const MORE_LINKS = [...COMPANY_LINKS, ...SUPPORT_LINKS];
 
+const ICON_BUTTON_CLASS =
+  "flex h-9 w-9 items-center justify-center rounded-full text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-foreground dark:text-zinc-400 dark:hover:bg-zinc-800";
+
 function subscribeNoop() {
   return () => {};
 }
@@ -253,36 +256,15 @@ export function SiteHeader({
               </div>
             </div>
           </div>
-          {userName ? (
-            <>
-              {isAdmin && (
-                <Link href="/admin" className={navLinkClass(isActivePath(pathname, "/admin"))}>
-                  Admin
-                </Link>
-              )}
-              <Link href="/account" className={navLinkClass(isActivePath(pathname, "/account"))}>
-                {userName.split(" ")[0]}
-              </Link>
-              <form action={logoutAction}>
-                <button type="submit" className="text-zinc-500 transition-colors hover:text-foreground dark:text-zinc-400">
-                  Log out
-                </button>
-              </form>
-            </>
-          ) : (
-            <Link href="/login" className={navLinkClass(isActivePath(pathname, "/login"))}>
-              Sign In
-            </Link>
-          )}
         </nav>
 
-        <div className="flex shrink-0 items-center gap-3">
+        <div className="flex shrink-0 items-center gap-1">
           <button
             type="button"
             onClick={() => setMobileSearchOpen((open) => !open)}
             aria-expanded={mobileSearchOpen}
             aria-label="Toggle search"
-            className="rounded-full p-2 text-zinc-500 transition-colors hover:text-foreground"
+            className={ICON_BUTTON_CLASS}
           >
             <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5" aria-hidden="true">
               <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.5" />
@@ -290,8 +272,8 @@ export function SiteHeader({
             </svg>
           </button>
 
-          <Link href="/cart" className="relative" aria-label="Cart">
-            <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true">
+          <Link href="/cart" className={`relative ${ICON_BUTTON_CLASS}`} aria-label="Cart">
+            <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
               <path
                 d="M3 3h2l.4 2M7 13h10l3-8H5.4M7 13L5.4 5M7 13l-1.5 6h11.5M9 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z"
                 stroke="currentColor"
@@ -301,7 +283,7 @@ export function SiteHeader({
               />
             </svg>
             {cartCount > 0 && (
-              <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-[10px] font-medium text-background">
+              <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-[10px] font-medium text-background">
                 {cartCount}
               </span>
             )}
@@ -309,9 +291,38 @@ export function SiteHeader({
 
           <ThemeToggle />
 
+          <span className="mx-2 hidden h-5 w-px bg-zinc-200 lg:block dark:bg-zinc-800" aria-hidden="true" />
+
+          <div className="hidden items-center gap-5 text-sm lg:flex">
+            {userName ? (
+              <>
+                {isAdmin && (
+                  <Link href="/admin" className={navLinkClass(isActivePath(pathname, "/admin"))}>
+                    Admin
+                  </Link>
+                )}
+                <Link href="/account" className={navLinkClass(isActivePath(pathname, "/account"))}>
+                  {userName.split(" ")[0]}
+                </Link>
+                <form action={logoutAction}>
+                  <button
+                    type="submit"
+                    className="text-zinc-500 transition-colors hover:text-foreground dark:text-zinc-400"
+                  >
+                    Log out
+                  </button>
+                </form>
+              </>
+            ) : (
+              <Link href="/login" className={navLinkClass(isActivePath(pathname, "/login"))}>
+                Sign In
+              </Link>
+            )}
+          </div>
+
           <Link
             href="/shop"
-            className="hidden rounded-full bg-foreground px-5 py-2 text-sm font-medium text-background transition-opacity hover:opacity-80 sm:inline-block"
+            className="ml-2 hidden rounded-full bg-foreground px-5 py-2 text-sm font-medium text-background transition-opacity hover:opacity-80 sm:inline-block"
           >
             Shop now
           </Link>
@@ -320,7 +331,7 @@ export function SiteHeader({
             ref={hamburgerButtonRef}
             type="button"
             onClick={() => setMenuOpen((open) => !open)}
-            className="rounded-md border border-zinc-200 p-2 lg:hidden dark:border-zinc-700"
+            className="ml-1 rounded-md border border-zinc-200 p-2 lg:hidden dark:border-zinc-700"
             aria-expanded={menuOpen}
             aria-controls="mobile-menu-drawer"
             aria-label="Toggle menu"

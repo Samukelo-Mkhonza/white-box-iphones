@@ -51,7 +51,7 @@ export default async function CartPage() {
               className="flex flex-col gap-4 rounded-2xl border border-zinc-200 p-4 sm:flex-row sm:items-center dark:border-zinc-800"
             >
               {image && (
-                <div className="relative h-20 w-20 shrink-0 rounded-lg bg-zinc-50 dark:bg-zinc-900">
+                <div className="relative h-20 w-20 shrink-0 rounded-lg">
                   <Image src={image.url} alt={image.altText} fill unoptimized className="object-contain p-2" />
                 </div>
               )}

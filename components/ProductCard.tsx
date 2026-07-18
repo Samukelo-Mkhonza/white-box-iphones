@@ -10,7 +10,7 @@ export function ProductCard({ product }: { product: ProductSummary }) {
       href={`/product/${product.slug}`}
       className="group flex flex-col overflow-hidden rounded-2xl border border-zinc-200 transition-shadow hover:shadow-lg dark:border-zinc-800"
     >
-      <div className="relative aspect-square bg-zinc-50 dark:bg-zinc-900">
+      <div className="relative aspect-square">
         {product.primaryImageUrl && (
           <Image
             src={product.primaryImageUrl}

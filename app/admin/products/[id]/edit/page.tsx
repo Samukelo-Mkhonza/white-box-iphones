@@ -88,7 +88,7 @@ export default async function EditProductPage({
               <div className="mt-4 flex flex-wrap gap-3">
                 {colourway.images.map((image) => (
                   <div key={image.id} className="relative">
-                    <div className="relative h-20 w-20 overflow-hidden rounded-lg bg-zinc-50 dark:bg-zinc-900">
+                    <div className="relative h-20 w-20 overflow-hidden rounded-lg">
                       <Image src={image.url} alt={image.altText} fill unoptimized className="object-contain p-1" />
                     </div>
                     <form action={deleteImageAction.bind(null, product.id, image.id)} className="mt-1 text-center">

@@ -287,63 +287,13 @@ const SERIES: SeriesDef[] = [
 ];
 
 // Official Apple Store finish-picker photography, one composite shot per
-// model x colour showing the back with the front peeking out. Assets are
-// served from Apple's Scene7 CDN and verified live for every colourway below.
-// 13-era files are portrait "<model>-<colour>-select[-2021]"; 14-era onwards
-// are wide-canvas "<model>-finish-select-<yyyymm>-<size>-<colour>" files that
-// need a crop (cropN) to read as a portrait catalog shot.
-const APPLE_IMG_BASE =
-  "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is";
-
-function appleColourSlug(name: string): string {
-  if (name === "(PRODUCT)RED") return "product-red";
-  if (name === "Sierra Blue") return "blue"; // Apple's own slug for the 13 Pro finish
-  return name.toLowerCase().replace(/[^a-z]/g, "");
-}
-
-function appleImageUrl(modelName: string, colourName: string): string {
-  const colour = appleColourSlug(colourName);
-  const select = (model: string, year = "") =>
-    `${APPLE_IMG_BASE}/${model}-${colour}-select${year}?wid=940&hei=1112&fmt=png-alpha`;
-  const finishSelect = (model: string, yyyymm: string, size: string) =>
-    `${APPLE_IMG_BASE}/${model}-finish-select-${yyyymm}-${size}-${colour}?wid=940&hei=1112&fmt=png-alpha&cropN=0.34,0.16,0.32,0.68`;
-
-  switch (modelName) {
-    case "iPhone 13 mini":
-      return select("iphone-13-mini", "-2021");
-    case "iPhone 13":
-      return select("iphone-13", "-2021");
-    case "iPhone 13 Pro":
-      return select("iphone-13-pro");
-    case "iPhone 13 Pro Max":
-      return select("iphone-13-pro-max");
-    case "iPhone 14":
-      return finishSelect("iphone-14", "202209", "6-1inch");
-    case "iPhone 14 Plus":
-      return finishSelect("iphone-14", "202209", "6-7inch");
-    case "iPhone 14 Pro":
-      return finishSelect("iphone-14-pro", "202209", "6-1inch");
-    case "iPhone 14 Pro Max":
-      return finishSelect("iphone-14-pro", "202209", "6-7inch");
-    case "iPhone 15":
-      return finishSelect("iphone-15", "202309", "6-1inch");
-    case "iPhone 15 Plus":
-      return finishSelect("iphone-15", "202309", "6-7inch");
-    case "iPhone 15 Pro":
-      return finishSelect("iphone-15-pro", "202309", "6-1inch");
-    case "iPhone 15 Pro Max":
-      return finishSelect("iphone-15-pro", "202309", "6-7inch");
-    case "iPhone 16":
-      return finishSelect("iphone-16", "202409", "6-1inch");
-    case "iPhone 16 Plus":
-      return finishSelect("iphone-16", "202409", "6-7inch");
-    case "iPhone 16 Pro":
-      return finishSelect("iphone-16-pro", "202409", "6-3inch");
-    case "iPhone 16 Pro Max":
-      return finishSelect("iphone-16-pro", "202409", "6-9inch");
-    default:
-      throw new Error(`No Apple image mapping for model "${modelName}"`);
-  }
+// model x colour showing the back with the front peeking out. Originally
+// pulled from Apple's Scene7 CDN; now stored locally with the CDN's baked-in
+// white catalog card stripped to true transparency so the phones sit directly
+// on any page background. One file per model x colour in
+// public/images/products, named "<model-slug>-<colour-slug>.webp".
+function productImageUrl(modelName: string, colourName: string): string {
+  return `/images/products/${slugify(modelName)}-${slugify(colourName)}.webp`;
 }
 
 function roundToNearestRand(cents: number): number {
@@ -414,10 +364,17 @@ async function main() {
           },
         });
 
-        // Drop old generated placeholders so re-seeding upgrades them to the
-        // real photo, but leave any admin-uploaded images untouched.
+        // Drop old generated placeholders and remote Apple CDN links so
+        // re-seeding upgrades them to the local transparent photo, but leave
+        // any admin-uploaded images untouched.
         await prisma.productImage.deleteMany({
-          where: { colourwayId: colourway.id, url: { startsWith: "/api/placeholder/" } },
+          where: {
+            colourwayId: colourway.id,
+            OR: [
+              { url: { startsWith: "/api/placeholder/" } },
+              { url: { startsWith: "https://store.storeimages.cdn-apple.com/" } },
+            ],
+          },
         });
 
         const existingImages = await prisma.productImage.findMany({
@@ -427,7 +384,7 @@ async function main() {
           await prisma.productImage.create({
             data: {
               colourwayId: colourway.id,
-              url: appleImageUrl(model.name, colour.name),
+              url: productImageUrl(model.name, colour.name),
               altText: `${model.name} in ${colour.name}, front and back view`,
               position: 0,
             },

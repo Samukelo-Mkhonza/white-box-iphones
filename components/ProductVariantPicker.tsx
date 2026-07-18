@@ -114,7 +114,7 @@ export function ProductVariantPicker({
   return (
     <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
       <div>
-        <div className="relative aspect-square overflow-hidden rounded-2xl bg-zinc-50 dark:bg-zinc-900">
+        <div className="relative aspect-square overflow-hidden rounded-2xl">
           {activeImage && (
             <Image
               key={activeImage.url}
@@ -133,7 +133,7 @@ export function ProductVariantPicker({
                 key={image.url}
                 type="button"
                 onClick={() => setImageIndex(index)}
-                className={`h-16 w-16 overflow-hidden rounded-lg border bg-zinc-50 transition-colors dark:bg-zinc-900 ${
+                className={`h-16 w-16 overflow-hidden rounded-lg border transition-colors ${
                   index === imageIndex ? "border-foreground" : "border-zinc-200 hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600"
                 }`}
               >
