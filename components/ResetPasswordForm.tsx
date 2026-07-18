@@ -2,45 +2,43 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
-import { loginAction, type AuthFormState } from "@/app/(site)/login/actions";
+import {
+  resetPasswordAction,
+  type ResetPasswordFormState,
+} from "@/app/(site)/reset-password/actions";
 
-const initialState: AuthFormState = { status: "idle" };
+const initialState: ResetPasswordFormState = { status: "idle" };
 
-export function LoginForm() {
-  const [state, action, pending] = useActionState(loginAction, initialState);
+export function ResetPasswordForm({ token }: { token: string }) {
+  const [state, action, pending] = useActionState(resetPasswordAction, initialState);
 
   return (
     <form action={action} className="space-y-4">
+      <input type="hidden" name="token" value={token} />
       <div>
-        <label htmlFor="email" className="mb-1 block text-sm font-medium">
-          Email
+        <label htmlFor="password" className="mb-1 block text-sm font-medium">
+          New password
         </label>
         <input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
+          id="password"
+          name="password"
+          type="password"
+          autoComplete="new-password"
+          minLength={8}
           required
           className="w-full rounded-md border border-zinc-200 bg-transparent px-3 py-2 text-sm dark:border-zinc-700"
         />
       </div>
       <div>
-        <div className="mb-1 flex items-center justify-between">
-          <label htmlFor="password" className="block text-sm font-medium">
-            Password
-          </label>
-          <Link
-            href="/forgot-password"
-            className="text-sm text-zinc-500 underline underline-offset-2 hover:text-foreground dark:text-zinc-400"
-          >
-            Forgot password?
-          </Link>
-        </div>
+        <label htmlFor="confirmPassword" className="mb-1 block text-sm font-medium">
+          Confirm new password
+        </label>
         <input
-          id="password"
-          name="password"
+          id="confirmPassword"
+          name="confirmPassword"
           type="password"
-          autoComplete="current-password"
+          autoComplete="new-password"
+          minLength={8}
           required
           className="w-full rounded-md border border-zinc-200 bg-transparent px-3 py-2 text-sm dark:border-zinc-700"
         />
@@ -65,7 +63,12 @@ export function LoginForm() {
             <path d="M12 8v4" />
             <path d="M12 16h.01" />
           </svg>
-          {state.message}
+          <span>
+            {state.message}{" "}
+            <Link href="/forgot-password" className="font-medium underline underline-offset-2">
+              Request a new link
+            </Link>
+          </span>
         </div>
       )}
 
@@ -74,7 +77,7 @@ export function LoginForm() {
         disabled={pending}
         className="w-full rounded-full bg-foreground py-3 text-sm font-medium text-background hover:opacity-80 disabled:opacity-50"
       >
-        {pending ? "Signing in..." : "Sign In"}
+        {pending ? "Resetting..." : "Reset Password"}
       </button>
     </form>
   );

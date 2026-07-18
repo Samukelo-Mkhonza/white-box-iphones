@@ -3,19 +3,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
-import { LoginForm } from "@/components/LoginForm";
+import { ForgotPasswordForm } from "@/components/ForgotPasswordForm";
 
-export const metadata: Metadata = { title: "Sign In" };
+export const metadata: Metadata = { title: "Forgot Password" };
 
-export default async function LoginPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ reset?: string }>;
-}) {
+export default async function ForgotPasswordPage() {
   const user = await getCurrentUser();
   if (user) redirect("/account");
-
-  const { reset } = await searchParams;
 
   return (
     <div className="mx-auto max-w-sm px-6 py-16">
@@ -29,26 +23,18 @@ export default async function LoginPage({
             className="h-8 w-8 object-contain"
           />
         </div>
-        <h1 className="mt-4 text-2xl font-bold tracking-tight">Welcome back</h1>
+        <h1 className="mt-4 text-2xl font-bold tracking-tight">Forgot your password?</h1>
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-          Sign in to see your orders, wishlist and faster checkout.
+          Enter your email and we&apos;ll send you a link to reset it.
         </p>
-        {reset === "1" && (
-          <div
-            role="status"
-            className="mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400"
-          >
-            Your password has been reset. Sign in with your new password.
-          </div>
-        )}
         <div className="mt-6">
-          <LoginForm />
+          <ForgotPasswordForm />
         </div>
       </div>
       <p className="mt-4 text-center text-sm text-zinc-500 dark:text-zinc-400">
-        New here?{" "}
-        <Link href="/register" className="font-medium text-foreground underline underline-offset-2">
-          Create an account
+        Remembered it?{" "}
+        <Link href="/login" className="font-medium text-foreground underline underline-offset-2">
+          Back to sign in
         </Link>
       </p>
     </div>
