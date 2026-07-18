@@ -1,13 +1,26 @@
 "use client";
 
 import { useActionState } from "react";
-import Link from "next/link";
-import { loginAction, type AuthFormState } from "@/app/(site)/login/actions";
+import {
+  requestPasswordResetAction,
+  type ForgotPasswordFormState,
+} from "@/app/(site)/forgot-password/actions";
 
-const initialState: AuthFormState = { status: "idle" };
+const initialState: ForgotPasswordFormState = { status: "idle" };
 
-export function LoginForm() {
-  const [state, action, pending] = useActionState(loginAction, initialState);
+export function ForgotPasswordForm() {
+  const [state, action, pending] = useActionState(requestPasswordResetAction, initialState);
+
+  if (state.status === "sent") {
+    return (
+      <div
+        role="status"
+        className="rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400"
+      >
+        {state.message}
+      </div>
+    );
+  }
 
   return (
     <form action={action} className="space-y-4">
@@ -20,27 +33,6 @@ export function LoginForm() {
           name="email"
           type="email"
           autoComplete="email"
-          required
-          className="w-full rounded-md border border-zinc-200 bg-transparent px-3 py-2 text-sm dark:border-zinc-700"
-        />
-      </div>
-      <div>
-        <div className="mb-1 flex items-center justify-between">
-          <label htmlFor="password" className="block text-sm font-medium">
-            Password
-          </label>
-          <Link
-            href="/forgot-password"
-            className="text-sm text-zinc-500 underline underline-offset-2 hover:text-foreground dark:text-zinc-400"
-          >
-            Forgot password?
-          </Link>
-        </div>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
           required
           className="w-full rounded-md border border-zinc-200 bg-transparent px-3 py-2 text-sm dark:border-zinc-700"
         />
@@ -74,7 +66,7 @@ export function LoginForm() {
         disabled={pending}
         className="w-full rounded-full bg-foreground py-3 text-sm font-medium text-background hover:opacity-80 disabled:opacity-50"
       >
-        {pending ? "Signing in..." : "Sign In"}
+        {pending ? "Sending..." : "Send Reset Link"}
       </button>
     </form>
   );
